@@ -27,6 +27,8 @@ Before installing this package, ensure you have the following **required** packa
 
 Install the required packages:
 
+> **Note:** If `vormiaphp/vormia` is already installed, skip this process. This applies only for standalone installation.
+
 ```bash
 composer require vormiaphp/vormia
 composer require livewire/volt

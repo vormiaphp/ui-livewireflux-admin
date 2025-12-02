@@ -12,7 +12,7 @@ new class extends Component {
     use WithNotifications;
 
     // Path to upload the file
-    public $uploadedPath = 'video-img-categories';
+    public $uploadedPath = 'category-img-categories';
 
     #[Validate('required|string|max:255')]
     public $name = '';
@@ -47,7 +47,7 @@ new class extends Component {
             $_taxonomy = new \App\Models\Vrm\Taxonomy();
             $_taxonomy->name = $_name;
             $_taxonomy->type = 'category';
-            $_taxonomy->group = 'video';
+            $_taxonomy->group = null;
             $_taxonomy->save();
 
             // Meta
@@ -58,24 +58,24 @@ new class extends Component {
             $this->reset(['name', 'description', 'picture']);
 
             // Flash success message
-            $this->notifySuccess(__('Video category created successfully!'));
+            $this->notifySuccess(__('Category created successfully!'));
         } catch (\Exception $e) {
-            $this->notifyError(__('Failed to create video category. Please try again.'));
+            $this->notifyError(__('Failed to create category. Please try again.'));
         }
     }
 
     public function cancel()
     {
         $this->reset(['name', 'description', 'picture']);
-        $this->notifyInfo(__('Video category creation cancelled!'));
+        $this->notifyInfo(__('Category creation cancelled!'));
     }
 }; ?>
 
 <div>
 	<x-admin-panel>
-		<x-slot name="header">{{ __('Add New Video Category') }}</x-slot>
+		<x-slot name="header">{{ __('Add New Category') }}</x-slot>
 		<x-slot name="desc">
-			{{ __('Add a new video category to the mobile app.') }}
+			{{ __('Add a new category to the mobile app.') }}
 		</x-slot>
 
 		<x-slot name="button">
@@ -99,8 +99,8 @@ new class extends Component {
 				<div class="space-y-12">
 					<div class="grid grid-cols-1 gap-x-8 gap-y-10 pb-12 md:grid-cols-3">
 						<div>
-							<h2 class="text-base/7 font-semibold text-gray-900">Video Category</h2>
-							<p class="mt-1 text-sm/6 text-gray-600">This is the name of the video category that will be displayed in the
+							<h2 class="text-base/7 font-semibold text-gray-900">Category</h2>
+							<p class="mt-1 text-sm/6 text-gray-600">This is the name of the category that will be displayed in the
 								mobile
 								app.</p>
 						</div>
@@ -111,7 +111,7 @@ new class extends Component {
 								<div class="mt-2">
 									<div
 										class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-										<input type="text" id="name" wire:model="name" placeholder="e.g. Ebony"
+										<input type="text" id="name" wire:model="name" placeholder="e.g. Programming Languages"
 											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('name') }}</span>
@@ -125,7 +125,7 @@ new class extends Component {
 									 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('description') }} </span>
 								</div>
-								<p class="mt-3 text-sm/6 text-gray-600">Write a description for the video category.</p>
+								<p class="mt-3 text-sm/6 text-gray-600">Write a description for the category.</p>
 							</div>
 
 							<div class="col-span-full">

@@ -33,8 +33,8 @@ new class extends Component {
         // with slugs
         $query->with('slugs');
 
-        // Filter by video group
-        $query->where('group', 'video');
+        // Filter by category group
+        $query->where('group', null);
 
         // Apply search filter
         if (!empty($this->search)) {
@@ -97,9 +97,9 @@ new class extends Component {
 <div>
 	{{-- @dd($results) --}}
 	<x-admin-panel>
-		<x-slot name="header">{{ __('Video Categories') }}</x-slot>
+		<x-slot name="header">{{ __('Categories') }}</x-slot>
 		<x-slot name="desc">
-			{{ __('Manage the video categories displayed in the mobile app.') }}
+			{{ __('Manage the categories displayed in the mobile app.') }}
 			{{ __('You can create, edit, enable/disable, or delete categories here.') }}
 		</x-slot>
 		<x-slot name="button">

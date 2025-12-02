@@ -18,7 +18,7 @@ new class extends Component {
     public $taxonomy;
 
     // Path to upload the file
-    public $uploadedPath = 'video-img-categories';
+    public $uploadedPath = 'category-img-categories';
 
     // Form fields
     public $name = '';
@@ -119,24 +119,24 @@ new class extends Component {
             $this->currentPhoto = $this->taxonomy->getMeta('picture');
 
             // Flash success message
-            $this->notifySuccess(__('Video category updated successfully!'));
+            $this->notifySuccess(__('Category updated successfully!'));
         } catch (\Exception $e) {
-            $this->notifyError(__('Failed to update food category. Please try again.'));
+            $this->notifyError(__('Failed to update category. Please try again.'));
         }
     }
 
     // Cancel
     public function cancel()
     {
-        $this->notifyInfo(__('Food category update cancelled!'));
+        $this->notifyInfo(__('Category update cancelled!'));
     }
 }; ?>
 
 <div>
 	<x-admin-panel>
-		<x-slot name="header">{{ __('Update Video Category') }}</x-slot>
+		<x-slot name="header">{{ __('Update Category') }}</x-slot>
 		<x-slot name="desc">
-			{{ __('Update the video category details.') }}
+			{{ __('Update the category details.') }}
 		</x-slot>
 
 		<x-slot name="button">
@@ -160,8 +160,8 @@ new class extends Component {
 				<div class="space-y-12">
 					<div class="grid grid-cols-1 gap-x-8 gap-y-10 pb-12 md:grid-cols-3">
 						<div>
-							<h2 class="text-base/7 font-semibold text-gray-900">Video Category</h2>
-							<p class="mt-1 text-sm/6 text-gray-600">This is the name of the video category that will be displayed in the
+							<h2 class="text-base/7 font-semibold text-gray-900">Category</h2>
+							<p class="mt-1 text-sm/6 text-gray-600">This is the name of the category that will be displayed in the
 								mobile
 								app.</p>
 						</div>
@@ -186,7 +186,7 @@ new class extends Component {
 									 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('description') }} </span>
 								</div>
-								<p class="mt-3 text-sm/6 text-gray-600">Write a description for the video category.</p>
+								<p class="mt-3 text-sm/6 text-gray-600">Write a description for the category.</p>
 							</div>
 
 							<div class="col-span-full">
