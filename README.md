@@ -94,8 +94,8 @@ $user->roles()->attach(1); // 1 for admin
 Use the AdminPanel component in your views:
 
 ```blade
-<x-admin-panel 
-    header="Categories" 
+<x-admin-panel
+    header="Categories"
     desc="Manage categories"
     :button="$buttonComponent"
 />
