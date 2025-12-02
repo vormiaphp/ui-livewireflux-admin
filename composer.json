@@ -32,6 +32,13 @@
             "Vormia\\UILivewireFluxAdmin\\Tests\\": "tests/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vormia\\UILivewireFluxAdmin\\UILivewireFluxAdminServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

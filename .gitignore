@@ -44,3 +44,5 @@ workspace.xml
 *.key
 *.crt
 *.csr
+
+example-package
