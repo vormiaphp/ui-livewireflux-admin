@@ -1,0 +1,38 @@
+{
+    "name": "vormiaphp/ui-livewireflux-admin",
+    "description": "Vormia UI Livewire Flux Admin - Admin panel components and routes for Laravel applications using Livewire Volt and Flux",
+    "keywords": ["laravel", "php", "livewire", "volt", "flux", "admin", "vormia"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Josh Minga",
+            "email": "packages@vormia.com",
+            "homepage": "https://packages.vormia.com/vormiaphp/ui-livewireflux-admin",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^12.0",
+        "vormiaphp/vormia": "^1.0",
+        "livewire/volt": "^1.0"
+    },
+    "suggest": {
+        "livewire/flux": "^1.0",
+        "laravel/fortify": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vormia\\UILivewireFluxAdmin\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vormia\\UILivewireFluxAdmin\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
+

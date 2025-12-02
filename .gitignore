@@ -1,0 +1,46 @@
+# Composer
+/vendor/
+/composer.lock
+/composer.phar
+
+# PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+/coverage/
+/test-results/
+
+# Laravel & environment
+.env
+.env.*
+Homestead.yaml
+Homestead.json
+.phpunit.result.cache
+
+# IDEs & OS
+.idea/
+*.iml
+*.log
+*.swp
+*.swo
+*.bak
+*.tmp
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# User model backups (created by installer)
+app/Models/User.php.backup.*
+
+# Misc
+node_modules/
+npm-debug.log
+yarn-error.log
+workspace.xml
+
+# Keys
+*.pem
+*.key
+*.crt
+*.csr
