@@ -86,7 +86,7 @@ class UpdateCommand extends Command
         $filesToBackup = [
             app_path('View/Components/AdminPanel.php') => $backupDir . '/View/Components/AdminPanel.php',
             app_path('Actions/Fortify/CreateNewUser.php') => $backupDir . '/Actions/Fortify/CreateNewUser.php',
-            resource_path('views/components/admin-panel.php') => $backupDir . '/views/components/admin-panel.php',
+            resource_path('views/components/admin-panel.blade.php') => $backupDir . '/views/components/admin-panel.blade.php',
             resource_path('views/livewire/admin') => $backupDir . '/views/livewire/admin',
         ];
 
