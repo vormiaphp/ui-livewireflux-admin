@@ -5,7 +5,7 @@ namespace Vormia\UILivewireFluxAdmin\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
-use Vormia\UILivewireFluxAdmin\VormiaUiLivewireFlux;
+use Vormia\UILivewireFluxAdmin\UILivewireFlux;
 
 class UninstallCommand extends Command
 {
@@ -63,7 +63,7 @@ class UninstallCommand extends Command
 
         // Step 2: Remove files
         $this->step('Removing package files...');
-        $vormia = new VormiaUiLivewireFlux();
+        $vormia = new UILivewireFlux();
         if ($vormia->uninstall()) {
             $this->info('✅ Files removed successfully.');
         } else {

@@ -18,7 +18,7 @@ class UILivewireFluxAdminServiceProvider extends ServiceProvider
     {
         // Register the main class
         $this->app->bind('ui-livewireflux-admin', function () {
-            return new VormiaUiLivewireFlux();
+            return new UILivewireFlux();
         });
     }
 
@@ -50,13 +50,13 @@ class UILivewireFluxAdminServiceProvider extends ServiceProvider
         // Check for required package: vormiaphp/vormia
         // Try different possible namespaces
         $vormiaExists = class_exists('VormiaPHP\Vormia\VormiaServiceProvider') ||
-                       class_exists('Vormia\Vormia\VormiaServiceProvider');
-        
+            class_exists('Vormia\Vormia\VormiaServiceProvider');
+
         if (!$vormiaExists) {
             if ($this->app->runningInConsole()) {
                 $this->app['log']->warning(
                     '[UI Livewire Flux Admin] vormiaphp/vormia package is required. ' .
-                    'Please install it first: composer require vormiaphp/vormia'
+                        'Please install it first: composer require vormiaphp/vormia'
                 );
             }
         }
@@ -66,10 +66,9 @@ class UILivewireFluxAdminServiceProvider extends ServiceProvider
             if ($this->app->runningInConsole()) {
                 $this->app['log']->warning(
                     '[UI Livewire Flux Admin] livewire/volt package is required. ' .
-                    'Please install it first: composer require livewire/volt'
+                        'Please install it first: composer require livewire/volt'
                 );
             }
         }
     }
 }
-

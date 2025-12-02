@@ -7,7 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
 
-class VormiaUiLivewireFlux
+class UILivewireFlux
 {
     /**
      * The filesystem instance.
@@ -17,7 +17,7 @@ class VormiaUiLivewireFlux
     protected $filesystem;
 
     /**
-     * Create a new VormiaUiLivewireFlux instance.
+     * Create a new UILivewireFlux instance.
      *
      * @return void
      */
@@ -31,7 +31,7 @@ class VormiaUiLivewireFlux
      */
     public function name(): string
     {
-        return 'VormiaUiLivewireFlux';
+        return 'UILivewireFlux';
     }
 
     /**
@@ -146,11 +146,11 @@ class VormiaUiLivewireFlux
         }
 
         $this->filesystem->ensureDirectoryExists(dirname($destination));
-        
+
         foreach ($this->filesystem->allFiles($source) as $file) {
             $relativePath = ltrim(str_replace($source, '', $file->getPathname()), '/\\');
             $destFile = rtrim($destination, '/\\') . '/' . $relativePath;
-            
+
             if ($this->filesystem->exists($destFile)) {
                 if (app()->runningInConsole() && app()->bound('command')) {
                     $command = app('command');
@@ -162,7 +162,7 @@ class VormiaUiLivewireFlux
                     }
                 }
             }
-            
+
             $this->filesystem->ensureDirectoryExists(dirname($destFile));
             $this->filesystem->copy($file->getPathname(), $destFile);
         }
@@ -243,4 +243,3 @@ class VormiaUiLivewireFlux
         }
     }
 }
-

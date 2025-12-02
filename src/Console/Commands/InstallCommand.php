@@ -4,7 +4,7 @@ namespace Vormia\UILivewireFluxAdmin\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Vormia\UILivewireFluxAdmin\VormiaUiLivewireFlux;
+use Vormia\UILivewireFluxAdmin\UILivewireFlux;
 
 class InstallCommand extends Command
 {
@@ -32,7 +32,7 @@ class InstallCommand extends Command
         // Check for required dependencies
         $this->checkRequiredDependencies();
 
-        $vormia = new VormiaUiLivewireFlux();
+        $vormia = new UILivewireFlux();
 
         // Step 1: Copy stubs
         $this->step('Copying files from stubs...');
@@ -150,21 +150,54 @@ class InstallCommand extends Command
         $routesContent = preg_replace('/\/\/.*$/m', '', $routesContent);
         $routesContent = trim($routesContent);
 
-        // Check if routes already exist
-        if (strpos($content, 'admin.categories.index') !== false) {
+        // Check if routes already exist - check for multiple markers
+        $routeMarkers = [
+            'admin.categories.index',
+            'admin.countries.index',
+            'admin.availabilities.index',
+            'admin.admins.index',
+            "Route::group(['prefix' => 'admin']",
+        ];
+
+        $routesExist = false;
+        foreach ($routeMarkers as $marker) {
+            if (strpos($content, $marker) !== false) {
+                $routesExist = true;
+                break;
+            }
+        }
+
+        if ($routesExist) {
             $this->warn('⚠️  Routes already exist in routes/web.php. Skipping route injection.');
             return;
         }
 
-        // Find the middleware group and inject routes
-        if (preg_match('/(Route::middleware\(\[[\'"]auth[\'"],\s*[\'"]authority[\'"]\]\)->group\(function\s*\(\)\s*\{)/s', $content, $matches)) {
-            $insertionPoint = strpos($content, $matches[1]) + strlen($matches[1]);
-            $content = substr_replace($content, "\n    " . $routesContent . "\n", $insertionPoint, 0);
-            File::put($routesPath, $content);
-            $this->info('✅ Routes injected successfully.');
-        } else {
+        // Find the middleware group - try multiple patterns
+        $middlewarePatterns = [
+            // Standard pattern
+            '/(Route::middleware\(\[[\'"]auth[\'"],\s*[\'"]authority[\'"]\]\)->group\(function\s*\(\)\s*\{)/s',
+            // With spaces variations
+            '/(Route::middleware\s*\(\s*\[[\'"]auth[\'"],\s*[\'"]authority[\'"]\s*\]\s*\)\s*->\s*group\s*\(\s*function\s*\(\)\s*\{)/s',
+            // Single quotes
+            '/(Route::middleware\(\[\'auth\',\s*\'authority\'\]\)->group\(function\s*\(\)\s*\{)/s',
+        ];
+
+        $found = false;
+        foreach ($middlewarePatterns as $pattern) {
+            if (preg_match($pattern, $content, $matches)) {
+                $insertionPoint = strpos($content, $matches[1]) + strlen($matches[1]);
+                $content = substr_replace($content, "\n    " . $routesContent . "\n", $insertionPoint, 0);
+                File::put($routesPath, $content);
+                $this->info('✅ Routes injected successfully.');
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
             $this->warn('⚠️  Could not find Route::middleware([\'auth\', \'authority\'])->group in routes/web.php');
             $this->line('   Please manually add the routes from routes-to-add.php');
+            $this->line('   The routes should be placed inside the middleware group.');
         }
     }
 
@@ -200,23 +233,96 @@ class InstallCommand extends Command
         $sidebarContent = preg_replace('/\/\/.*$/m', '', $sidebarContent);
         $sidebarContent = trim($sidebarContent);
 
-        // Check if menu already exists
-        if (strpos($content, 'admin.countries.index') !== false) {
+        // Check if menu already exists - check for multiple markers
+        $menuMarkers = [
+            'admin.countries.index',
+            'admin.cities.index',
+            'admin.availabilities.index',
+            'admin.inheritance.index',
+            'admin.admins.index',
+            "route('admin.countries.index')",
+            "route('admin.cities.index')",
+            "{{ __('Countries') }}",
+            "{{ __('Availability') }}",
+        ];
+
+        $menuExists = false;
+        foreach ($menuMarkers as $marker) {
+            if (strpos($content, $marker) !== false) {
+                $menuExists = true;
+                break;
+            }
+        }
+
+        if ($menuExists) {
             $this->warn('⚠️  Sidebar menu already exists. Skipping sidebar injection.');
             return;
         }
 
-        // Find line 20 (after Dashboard menu item) and inject
+        // Find Dashboard menu item - try multiple patterns
+        $dashboardPatterns = [
+            // Look for Dashboard text
+            '/Dashboard/i',
+            // Look for Dashboard route
+            "/route\(['\"]dashboard['\"]\)/i",
+            // Look for flux:navlist.item with Dashboard
+            '/flux:navlist\.item.*Dashboard/i',
+            // Look for wire:navigate with Dashboard
+            '/wire:navigate.*Dashboard/i',
+        ];
+
         $lines = explode("\n", $content);
-        if (count($lines) >= 20) {
-            // Insert after line 20 (index 19)
-            array_splice($lines, 20, 0, explode("\n", $sidebarContent));
+        $insertionLine = -1;
+
+        // Try to find Dashboard menu item
+        foreach ($dashboardPatterns as $pattern) {
+            for ($i = 0; $i < count($lines); $i++) {
+                if (preg_match($pattern, $lines[$i])) {
+                    // Find the closing tag of this menu item
+                    for ($j = $i + 1; $j < min($i + 10, count($lines)); $j++) {
+                        if (preg_match('/<\/flux:navlist\.item>/i', $lines[$j]) || 
+                            preg_match('/\/>/', $lines[$j])) {
+                            $insertionLine = $j + 1;
+                            break 2;
+                        }
+                    }
+                    // If no closing tag found, insert after the line with Dashboard
+                    if ($insertionLine === -1) {
+                        $insertionLine = $i + 1;
+                        break 2;
+                    }
+                }
+            }
+        }
+
+        // Fallback: if Dashboard not found, try to find a reasonable insertion point
+        if ($insertionLine === -1) {
+            // Look for common patterns after which we can insert
+            for ($i = 0; $i < min(30, count($lines)); $i++) {
+                if (preg_match('/<\/flux:navlist\.item>/i', $lines[$i]) || 
+                    preg_match('/<hr\s*\/?>/i', $lines[$i])) {
+                    $insertionLine = $i + 1;
+                    break;
+                }
+            }
+        }
+
+        // Final fallback: insert after line 20 if file is long enough
+        if ($insertionLine === -1 && count($lines) >= 20) {
+            $insertionLine = 20;
+        }
+
+        if ($insertionLine !== -1 && $insertionLine < count($lines)) {
+            // Insert the sidebar content
+            $sidebarLines = explode("\n", $sidebarContent);
+            array_splice($lines, $insertionLine, 0, $sidebarLines);
             $content = implode("\n", $lines);
             File::put($sidebarPath, $content);
             $this->info('✅ Sidebar menu injected successfully.');
         } else {
             $this->warn('⚠️  Could not find insertion point in sidebar file.');
             $this->line('   Please manually add the sidebar menu code after the Dashboard menu item.');
+            $this->line('   The menu code should be placed in: ' . $sidebarPath);
         }
     }
 

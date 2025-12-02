@@ -5,7 +5,7 @@ namespace Vormia\UILivewireFluxAdmin\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;
-use Vormia\UILivewireFluxAdmin\VormiaUiLivewireFlux;
+use Vormia\UILivewireFluxAdmin\UILivewireFlux;
 
 class UpdateCommand extends Command
 {
@@ -49,7 +49,7 @@ class UpdateCommand extends Command
 
         // Step 2: Update files
         $this->step('Updating package files...');
-        $vormia = new VormiaUiLivewireFlux();
+        $vormia = new UILivewireFlux();
         if ($vormia->update()) {
             $this->info('✅ Files updated successfully.');
         } else {
