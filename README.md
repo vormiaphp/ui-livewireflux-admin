@@ -1,7 +1,5 @@
 # Vormia UI Livewire Flux Admin
 
-# Vormia - Laravel Package
-
 [![Packagist](https://img.shields.io/packagist/v/vormiaphp/ui-livewireflux-admin.svg)](https://packagist.org/packages/vormiaphp/ui-livewireflux-admin)
 [![GitHub](https://img.shields.io/github/stars/vormiaphp/ui-livewireflux-admin.svg)](https://github.com/vormiaphp/ui-livewireflux-admin)
 

@@ -104,7 +104,7 @@ new class extends Component {
 		</x-slot>
 		<x-slot name="button">
 			<a href="{{ route('admin.inheritance.create') }}"
-				class="bg-blue-500 text-white hover:bg-blue-600 px-3 py-2 rounded-md float-right text-sm font-bold">
+				class="bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700 px-3 py-2 rounded-md float-right text-sm font-bold">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 inline-block">
 					<path fill-rule="evenodd"
 						d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
@@ -116,13 +116,13 @@ new class extends Component {
 
 		{{-- Search & Filter --}}
 		<div class="my-4">
-			<div class="bg-white shadow-sm sm:rounded-lg">
+			<div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
 				<div class="px-4 py-5 sm:p-6">
-					<h3 class="text-base font-semibold text-gray-900">Search & Filter data</h3>
+					<h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Search & Filter data</h3>
 					<form class="sm:flex sm:items-center">
 						<div class="w-full sm:max-w-xs">
 							<input type="text" wire:model.live.debounce.300ms="search"
-								class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+								class="block w-full rounded-md bg-white dark:bg-gray-700 px-3 py-1.5 text-base text-gray-900 dark:text-gray-100 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
 								placeholder="Search inheritance..." />
 						</div>
 					</form>
@@ -134,32 +134,32 @@ new class extends Component {
 		{!! $this->renderNotification() !!}
 
 		{{-- List --}}
-		<div class="overflow-hidden shadow-sm ring-1 ring-black/5 sm:rounded-lg mt-2">
+		<div class="overflow-hidden shadow-sm ring-1 ring-black/5 dark:ring-white/10 sm:rounded-lg mt-2">
 
-			<table class="min-w-full divide-y divide-gray-300">
-				<thead class="bg-gray-50">
+			<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
+				<thead class="bg-gray-50 dark:bg-gray-700">
 					<tr>
-						<th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-3">#ID</th>
-						<th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-3">Name</th>
-						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Parent</th>
-						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
-						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Slug</th>
-						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+						<th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-3">#ID</th>
+						<th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-3">Name</th>
+						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Parent</th>
+						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Type</th>
+						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Slug</th>
+						<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Status</th>
 						<th scope="col" class="relative py-3.5 pr-4 pl-3 sm:pr-3">
 							<span class="sr-only">Actions</span>
 						</th>
 					</tr>
 				</thead>
-				<tbody class="bg-white">
+				<tbody class="bg-white dark:bg-gray-800">
 					@if ($this->results->isNotEmpty())
 						@foreach ($this->results as $row)
-							<tr class="even:bg-gray-50">
-								<td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3">{{ $row->id }}</td>
-								<td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3">{{ $row->name }}</td>
-								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ $row->parent_path }}</td>
-								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ $row->type }}</td>
-								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{{ $row->getSlug() }}</td>
-								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
+							<tr class="even:bg-gray-50 dark:even:bg-gray-800/50">
+								<td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100 sm:pl-3">{{ $row->id }}</td>
+								<td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100 sm:pl-3">{{ $row->name }}</td>
+								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $row->parent_path }}</td>
+								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $row->type }}</td>
+								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $row->getSlug() }}</td>
+								<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 									@if ($row->is_active)
 										<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-sm bg-green-400 text-white">
 											Active
@@ -213,10 +213,10 @@ new class extends Component {
 							</tr>
 						@endforeach
 					@else
-						<tr class="even:bg-gray-50">
+						<tr class="even:bg-gray-50 dark:even:bg-gray-800/50">
 							<td colspan="7"
-								class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-3 text-center">
-								<span class="text-gray-500 text-2xl font-bold">No results found</span>
+								class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100 sm:pl-3 text-center">
+								<span class="text-gray-500 dark:text-gray-400 text-2xl font-bold">No results found</span>
 							</td>
 						</tr>
 					@endif

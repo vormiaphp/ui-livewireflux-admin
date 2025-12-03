@@ -152,7 +152,7 @@ new class extends Component {
                 };
             @endphp
             <a href="{{ route($indexRoute) }}"
-                class="bg-black text-white hover:bg-gray-800 px-3 py-2 rounded-md float-right text-sm font-bold">
+                class="bg-black dark:bg-gray-700 text-white hover:bg-gray-800 dark:hover:bg-gray-600 px-3 py-2 rounded-md float-right text-sm font-bold">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 inline-block">
                     <path fill-rule="evenodd"
                         d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
@@ -163,7 +163,7 @@ new class extends Component {
         </x-slot>
 
         {{-- Update Form --}}
-        <div class="overflow-hidden shadow-sm ring-1 ring-black/5 sm:rounded-lg px-4 py-5 mb-5 sm:p-6">
+        <div class="overflow-hidden shadow-sm ring-1 ring-black/5 dark:ring-white/10 sm:rounded-lg px-4 py-5 mb-5 sm:p-6">
             {{-- Display notifications --}}
             {!! $this->renderNotification() !!}
 
@@ -171,29 +171,29 @@ new class extends Component {
                 <div class="space-y-12">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-10 pb-12 md:grid-cols-3">
                         <div>
-                            <h2 class="text-base/7 font-semibold text-gray-900">Location Details</h2>
-                            <p class="mt-1 text-sm/6 text-gray-600">Update the location information below.</p>
+                            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-gray-100">Location Details</h2>
+                            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-300">Update the location information below.</p>
                         </div>
 
                         <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
                             <div class="col-span-full">
-                                <label class="block text-sm/6 font-medium text-gray-900">Location Type</label>
+                                <label class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Location Type</label>
                                 <div class="mt-2">
                                     <div
-                                        class="flex items-center rounded-md bg-gray-100 pl-3 py-1.5 pr-3 text-base text-gray-600 sm:text-sm/6">
+                                        class="flex items-center rounded-md bg-gray-100 dark:bg-gray-700 pl-3 py-1.5 pr-3 text-base text-gray-600 dark:text-gray-300 sm:text-sm/6">
                                         {{ $this->taxonomy ? ucfirst($this->taxonomy->group) : 'N/A' }}
                                     </div>
-                                    <p class="mt-2 text-sm/6 text-gray-600">Location type cannot be changed after creation.</p>
+                                    <p class="mt-2 text-sm/6 text-gray-600 dark:text-gray-300">Location type cannot be changed after creation.</p>
                                 </div>
                             </div>
 
                             @if ($this->taxonomy && $this->taxonomy->group !== 'country')
                                 <div class="col-span-full">
-                                    <label for="parent" class="block text-sm/6 font-medium text-gray-900">Parent
+                                    <label for="parent" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Parent
                                         {{ ucfirst($this->taxonomy->group === 'city' ? 'Country' : ($this->taxonomy->group === 'area' ? 'City' : 'Area')) }}</label>
                                     <div class="mt-2">
                                         <select wire:model="parent" id="parent"
-                                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                                            class="block w-full rounded-md bg-white dark:bg-gray-700 px-3 py-1.5 text-base text-gray-900 dark:text-gray-100 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                                             <option value="0">-- Select Parent --</option>
                                             @foreach ($this->parent_list as $_parent)
                                                 <option value="{{ $_parent->id }}" @selected($this->parent == $_parent->id)>{{ $_parent->name }}</option>
@@ -205,12 +205,12 @@ new class extends Component {
                             @endif
 
                             <div class="col-span-full">
-                                <label for="name" class="block text-sm/6 font-medium text-gray-900 required">Name</label>
+                                <label for="name" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100 required">Name</label>
                                 <div class="mt-2">
                                     <div
-                                        class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                        class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                                         <input type="text" id="name" wire:model="name" placeholder="e.g. New York"
-                                            class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+                                            class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
                                     </div>
                                     <span class="text-red-500 text-sm italic "> {{ $errors->first('name') }}</span>
                                 </div>
@@ -218,48 +218,48 @@ new class extends Component {
 
                             @if ($this->taxonomy && $this->taxonomy->group === 'country')
                                 <div class="sm:col-span-3">
-                                    <label for="dial_code" class="block text-sm/6 font-medium text-gray-900">Dial Code</label>
+                                    <label for="dial_code" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Dial Code</label>
                                     <div class="mt-2">
                                         <div
-                                            class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                            class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                                             <input type="text" id="dial_code" wire:model="dial_code"
                                                 placeholder="e.g. +1, +234, +93"
-                                                class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+                                                class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
                                         </div>
                                         <span class="text-red-500 text-sm italic "> {{ $errors->first('dial_code') }}</span>
                                     </div>
-                                    <p class="mt-3 text-sm/6 text-gray-600">Enter the country dial code (e.g., +1, +234).</p>
+                                    <p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Enter the country dial code (e.g., +1, +234).</p>
                                 </div>
 
                                 <div class="sm:col-span-3">
-                                    <label for="code" class="block text-sm/6 font-medium text-gray-900">Country Code</label>
+                                    <label for="code" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Country Code</label>
                                     <div class="mt-2">
                                         <div
-                                            class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                                            class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                                             <input type="text" id="code" wire:model="code" maxlength="2"
                                                 placeholder="e.g. US, NG, AF"
-                                                class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 uppercase" />
+                                                class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6 uppercase" />
                                         </div>
                                         <span class="text-red-500 text-sm italic "> {{ $errors->first('code') }}</span>
                                     </div>
-                                    <p class="mt-3 text-sm/6 text-gray-600">Enter the ISO 3166-1 alpha-2 country code (2 letters).</p>
+                                    <p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Enter the ISO 3166-1 alpha-2 country code (2 letters).</p>
                                 </div>
                             @endif
 
                             <div class="col-span-full">
-                                <label for="description" class="block text-sm/6 font-medium text-gray-900">Description</label>
+                                <label for="description" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Description</label>
                                 <div class="mt-2">
                                     <textarea id="description" wire:model="description" rows="3"
-                                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                                        class="block w-full rounded-md bg-white dark:bg-gray-700 px-3 py-1.5 text-base text-gray-900 dark:text-gray-100 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
                                     <span class="text-red-500 text-sm italic "> {{ $errors->first('description') }} </span>
                                 </div>
-                                <p class="mt-3 text-sm/6 text-gray-600">Write a description for the location.</p>
+                                <p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Write a description for the location.</p>
                             </div>
 
                             <div class="col-span-full">
-                                <div class="flex items-center justify-end gap-x-3 border-t border-gray-900/10 pt-4">
+                                <div class="flex items-center justify-end gap-x-3 border-t border-gray-900/10 dark:border-gray-100/10 pt-4">
                                     <button type="button" wire:click="cancel"
-                                        class="text-sm font-semibold text-gray-900">Cancel</button>
+                                        class="text-sm font-semibold text-gray-900 dark:text-gray-100">Cancel</button>
 
                                     <button type="submit" wire:loading.attr="disabled"
                                         class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">

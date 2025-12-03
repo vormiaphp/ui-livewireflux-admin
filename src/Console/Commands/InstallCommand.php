@@ -345,27 +345,38 @@ class InstallCommand extends Command
             return;
         }
 
-        // Backup original file before replacing it
+        // Backup original file before replacing it (create .backup file in same directory)
         $backupPath = $this->getCreateNewUserBackupPath();
 
-        // Only backup if backup doesn't exist yet (to preserve the true original)
-        if (!File::exists($backupPath)) {
-            File::ensureDirectoryExists(dirname($backupPath));
+        try {
+            // Always create backup (overwrite if exists) to ensure we have the latest original
+            // We create a .backup file in the same directory as the original file
             File::copy($createNewUserPath, $backupPath);
-            $this->line('  Original CreateNewUser.php backed up.');
+            $this->line('  Original CreateNewUser.php backed up to CreateNewUser.backup.');
+            $this->line('  Note: The backup file will not be deleted. On uninstall, it will be restored.');
+        } catch (\Exception $e) {
+            $this->error('❌ Failed to create backup of CreateNewUser.php: ' . $e->getMessage());
+            $this->warn('⚠️  Continuing with update, but backup was not created.');
+            $this->warn('⚠️  Note: We will not delete the backup file. On uninstall, the .backup file will be restored.');
         }
 
         // Copy stub
-        File::copy($stubPath, $createNewUserPath);
-        $this->info('✅ CreateNewUser updated successfully.');
+        try {
+            File::copy($stubPath, $createNewUserPath);
+            $this->info('✅ CreateNewUser updated successfully.');
+        } catch (\Exception $e) {
+            $this->error('❌ Failed to update CreateNewUser.php: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
      * Get the backup path for CreateNewUser.php
+     * Creates a .backup file in the same directory as the original
      */
     private function getCreateNewUserBackupPath(): string
     {
-        return storage_path('app/ui-livewireflux-admin-original/CreateNewUser.php');
+        return app_path('Actions/Fortify/CreateNewUser.backup');
     }
 
     /**

@@ -433,37 +433,76 @@ class UninstallCommand extends Command
 
     /**
      * Revert CreateNewUser changes
+     * Restores from CreateNewUser.backup file by copying it and renaming to .php
      */
     private function revertCreateNewUser(): void
     {
         $createNewUserPath = app_path('Actions/Fortify/CreateNewUser.php');
         $backupPath = $this->getCreateNewUserBackupPath();
 
-        // Delete the modified file
-        if (File::exists($createNewUserPath)) {
-            File::delete($createNewUserPath);
-            $this->line('  Modified CreateNewUser.php deleted.');
-        } else {
-            $this->warn('⚠️  CreateNewUser.php not found.');
+        // Step 1: Check for backup file (.backup extension)
+        if (!File::exists($backupPath)) {
+            $this->warn('⚠️  Original CreateNewUser.backup not found at: ' . $backupPath);
+            $this->warn('⚠️  Cannot restore original file. The installed stub will be deleted, but original cannot be restored.');
+            $this->line('   You may need to manually restore CreateNewUser.php from your version control.');
+            
+            // Still delete the installed stub if it exists
+            if (File::exists($createNewUserPath)) {
+                try {
+                    File::delete($createNewUserPath);
+                    $this->line('  Installed CreateNewUser.php stub deleted.');
+                } catch (\Exception $e) {
+                    $this->error('❌ Failed to delete CreateNewUser.php: ' . $e->getMessage());
+                }
+            }
+            return;
         }
 
-        // Restore from backup if it exists
-        if (File::exists($backupPath)) {
+        // Step 2: Delete the installed stub file
+        if (File::exists($createNewUserPath)) {
+            try {
+                File::delete($createNewUserPath);
+                $this->line('  Installed CreateNewUser.php stub deleted.');
+            } catch (\Exception $e) {
+                $this->error('❌ Failed to delete installed CreateNewUser.php: ' . $e->getMessage());
+                $this->warn('⚠️  Cannot proceed with restore while installed file exists.');
+                return;
+            }
+        } else {
+            $this->warn('⚠️  CreateNewUser.php not found. It may have already been deleted.');
+        }
+
+        // Step 3: Restore original from .backup file (copy and rename to .php)
+        try {
             File::ensureDirectoryExists(dirname($createNewUserPath));
             File::copy($backupPath, $createNewUserPath);
-            $this->info('✅ CreateNewUser restored from backup successfully.');
-        } else {
-            $this->warn('⚠️  Original CreateNewUser.php backup not found. Cannot restore original file.');
-            $this->line('   You may need to manually restore CreateNewUser.php from your version control.');
+            $this->info('✅ CreateNewUser restored from CreateNewUser.backup successfully.');
+        } catch (\Exception $e) {
+            $this->error('❌ Failed to restore CreateNewUser.php from backup: ' . $e->getMessage());
+            $this->warn('⚠️  Backup exists at: ' . $backupPath);
+            $this->line('   You may need to manually copy CreateNewUser.backup to CreateNewUser.php');
+            return;
+        }
+
+        // Step 4: Delete the backup file after successful restoration
+        try {
+            if (File::exists($backupPath)) {
+                File::delete($backupPath);
+                $this->line('  CreateNewUser.backup file deleted.');
+            }
+        } catch (\Exception $e) {
+            $this->warn('⚠️  Failed to delete CreateNewUser.backup: ' . $e->getMessage());
+            $this->line('   You may need to manually delete: ' . $backupPath);
         }
     }
 
     /**
      * Get the backup path for CreateNewUser.php
+     * Looks for the .backup file in the same directory as the original
      */
     private function getCreateNewUserBackupPath(): string
     {
-        return storage_path('app/ui-livewireflux-admin-original/CreateNewUser.php');
+        return app_path('Actions/Fortify/CreateNewUser.backup');
     }
 
     /**

@@ -127,7 +127,7 @@ new class extends Component {
 
 		<x-slot name="button">
 			<a href="{{ route('admin.admins.index') }}"
-				class="bg-black text-white hover:bg-gray-800 px-3 py-2 rounded-md float-right text-sm font-bold">
+				class="bg-black dark:bg-gray-700 text-white hover:bg-gray-800 dark:hover:bg-gray-600 px-3 py-2 rounded-md float-right text-sm font-bold">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4 inline-block">
 					<path fill-rule="evenodd"
 						d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
@@ -138,7 +138,7 @@ new class extends Component {
 		</x-slot>
 
 		{{-- Form --}}
-		<div class="overflow-hidden shadow-sm ring-1 ring-black/5 sm:rounded-lg px-4 py-5 mb-5 sm:p-6">
+		<div class="overflow-hidden shadow-sm ring-1 ring-black/5 dark:ring-white/10 sm:rounded-lg px-4 py-5 mb-5 sm:p-6">
 			{{-- Display notifications --}}
 			{!! $this->renderNotification() !!}
 
@@ -146,70 +146,70 @@ new class extends Component {
 				<div class="space-y-12">
 					<div class="grid grid-cols-1 gap-x-8 gap-y-10 pb-12 md:grid-cols-3">
 						<div>
-							<h2 class="text-base/7 font-semibold text-gray-900">Admin Information</h2>
-							<p class="mt-1 text-sm/6 text-gray-600">Enter the admin's information below. All fields marked with <span
+							<h2 class="text-base/7 font-semibold text-gray-900 dark:text-gray-100">Admin Information</h2>
+							<p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-300">Enter the admin's information below. All fields marked with <span
 									class="text-red-500">*</span> are required.</p>
 						</div>
 
 						<div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
 							<div class="col-span-full">
-								<label for="name" class="block text-sm/6 font-medium text-gray-900 required">Name</label>
+								<label for="name" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100 required">Name</label>
 								<div class="mt-2">
 									<div
-										class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
 										<input type="text" id="name" wire:model="name" placeholder="e.g. John Doe"
-											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('name') }}</span>
 								</div>
 							</div>
 
 							<div class="col-span-full">
-								<label for="email" class="block text-sm/6 font-medium text-gray-900 required">Email</label>
+								<label for="email" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100 required">Email</label>
 								<div class="mt-2">
 									<div
-										class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
 										<input type="email" id="email" wire:model="email" placeholder="email@example.com"
-											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('email') }}</span>
 								</div>
 							</div>
 
 							<div class="col-span-full">
-								<label for="phone" class="block text-sm/6 font-medium text-gray-900">Phone</label>
+								<label for="phone" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Phone</label>
 								<div class="mt-2">
 									<div
-										class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
 										<input type="text" id="phone" wire:model="phone" placeholder="e.g. +1234567890"
-											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('phone') }}</span>
 								</div>
 							</div>
 
 							<div class="col-span-full">
-								<label for="whatsapp_number" class="block text-sm/6 font-medium text-gray-900">WhatsApp Number</label>
+								<label for="whatsapp_number" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">WhatsApp Number</label>
 								<div class="mt-2">
 									<div
-										class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
 										<input type="text" id="whatsapp_number" wire:model="whatsapp_number" placeholder="e.g. +1234567890"
-											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('whatsapp_number') }}</span>
 								</div>
 							</div>
 
 							<div class="col-span-full" x-data="{ showPassword: false }">
-								<label for="password" class="block text-sm/6 font-medium text-gray-900 required">Password</label>
+								<label for="password" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100 required">Password</label>
 								<div class="mt-2">
 									<div
-										class="flex items-center rounded-md bg-white pl-3 pr-1 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 pr-1 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
 										<input :type="showPassword ? 'text' : 'password'" id="password" wire:model="password"
 											placeholder="Enter password"
-											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
 										<button type="button" x-on:click="showPassword = !showPassword"
-											class="text-gray-400 hover:text-gray-600">
+											class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
 											<svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none"
 												viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
 												<path stroke-linecap="round" stroke-linejoin="round"
@@ -224,25 +224,25 @@ new class extends Component {
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('password') }}</span>
 								</div>
-								<p class="mt-3 text-sm/6 text-gray-600">Set a secure password for the admin to login.</p>
+								<p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Set a secure password for the admin to login.</p>
 							</div>
 
 							<div class="col-span-full">
-								<label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900 required">Confirm
+								<label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100 required">Confirm
 									Password</label>
 								<div class="mt-2">
 									<div
-										class="flex items-center rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
 										<input type="password" id="password_confirmation" wire:model="password_confirmation"
 											placeholder="Confirm password"
-											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6" />
+											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('password_confirmation') }}</span>
 								</div>
 							</div>
 
 							<div class="col-span-full">
-								<label for="photo" class="block text-sm/6 font-medium text-gray-900">Photo</label>
+								<label for="photo" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Photo</label>
 								<div class="mt-2 flex items-center gap-x-3">
 									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
 										stroke="currentColor" class="size-6">
@@ -251,7 +251,7 @@ new class extends Component {
 									</svg>
 									<div>
 										<input type="file" wire:model="photo" accept=".jpg,.jpeg,.png,.webp"
-											class="block w-full cursor-pointer px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-gray-200 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-gray-900 hover:file:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+											class="block w-full cursor-pointer px-3 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-gray-200 dark:file:bg-gray-600 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-gray-900 dark:file:text-gray-100 hover:file:bg-gray-300 dark:hover:file:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
 										<span class="text-red-500 text-sm italic "> {{ $errors->first('photo') }} </span>
 									</div>
 								</div>
@@ -262,13 +262,13 @@ new class extends Component {
 										<img src="{{ $photo->temporaryUrl() }}" alt="Preview" class="h-20 w-20 object-cover rounded-md">
 									</div>
 								@endif
-								<p class="mt-3 text-sm/6 text-gray-600">Upload an optional photo for the admin (JPG, PNG, or WebP format, max
+								<p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Upload an optional photo for the admin (JPG, PNG, or WebP format, max
 									2MB).</p>
 							</div>
 
 							<div class="col-span-full">
-								<div class="flex items-center justify-end gap-x-3 border-t border-gray-900/10 pt-4">
-									<button type="button" wire:click="cancel" class="text-sm font-semibold text-gray-900">Cancel</button>
+								<div class="flex items-center justify-end gap-x-3 border-t border-gray-900/10 dark:border-gray-100/10 pt-4">
+									<button type="button" wire:click="cancel" class="text-sm font-semibold text-gray-900 dark:text-gray-100">Cancel</button>
 
 									<button type="submit" wire:loading.attr="disabled"
 										class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
