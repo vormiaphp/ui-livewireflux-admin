@@ -207,11 +207,11 @@ class InstallCommand extends Command
     private function injectSidebarMenu(): void
     {
         $sidebarPath = resource_path('views/components/layouts/app/sidebar.blade.php');
-        $sidebarToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.php');
+        $sidebarToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php');
         
         // If developing locally, use local path
         if (!File::exists($sidebarToAdd)) {
-            $sidebarToAdd = __DIR__ . '/../../stubs/reference/sidebar-menu-to-add.php';
+            $sidebarToAdd = __DIR__ . '/../../stubs/reference/sidebar-menu-to-add.blade.php';
         }
 
         if (!File::exists($sidebarPath)) {
@@ -221,15 +221,19 @@ class InstallCommand extends Command
         }
 
         if (!File::exists($sidebarToAdd)) {
-            $this->error('❌ sidebar-menu-to-add.php not found.');
+            $this->error('❌ sidebar-menu-to-add.blade.php not found.');
             return;
         }
 
         $content = File::get($sidebarPath);
         $sidebarContent = File::get($sidebarToAdd);
         
-        // Extract just the menu code (remove PHP tags and comments)
+        // Extract just the menu code (remove PHP tags if present)
+        // Remove PHP opening tag at the start
         $sidebarContent = preg_replace('/^<\?php\s*/', '', $sidebarContent);
+        // Remove PHP closing tag (can appear anywhere)
+        $sidebarContent = preg_replace('/\?>\s*/', '', $sidebarContent);
+        // Remove single-line PHP comments (//) but keep Blade comments ({{-- --}})
         $sidebarContent = preg_replace('/\/\/.*$/m', '', $sidebarContent);
         $sidebarContent = trim($sidebarContent);
 

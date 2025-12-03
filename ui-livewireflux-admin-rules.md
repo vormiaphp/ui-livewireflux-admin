@@ -50,7 +50,7 @@ resources/views/components/layouts/app/sidebar.blade.php
 ### How Sidebar Works
 
 - The sidebar is automatically injected during package installation (if `livewire/flux` is installed)
-- Sidebar menu items are added from: `src/stubs/reference/sidebar-menu-to-add.php`
+- Sidebar menu items are added from: `src/stubs/reference/sidebar-menu-to-add.blade.php`
 - Menu items use Flux navigation components: `<flux:navlist.item>`
 - Routes are checked using: `request()->routeIs('admin.*')`
 
