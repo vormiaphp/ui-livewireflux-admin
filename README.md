@@ -117,13 +117,13 @@ After installation, verify that:
 If the routes were not automatically injected into `routes/web.php`, manually add them:
 
 1. Open `routes/web.php`
-2. Find the `Route::middleware(['auth', 'authority'])->group(function () { ... });` block
+2. Find the `Route::middleware(['auth'])->group(function () { ... });` block
 3. Add the routes from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php` inside this block
 
 **Example:**
 
 ```php
-Route::middleware(['auth', 'authority'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // ... existing routes ...
 
     // Add admin routes here
@@ -190,7 +190,7 @@ Pre-configured routes for all admin sections:
 - **Availability:** `/admin/availabilities`, `/admin/availabilities/create`, `/admin/availabilities/edit/{id}`
 - **Admins:** `/admin/admins`, `/admin/admins/create`, `/admin/admins/edit/{id}`
 
-All routes are protected by `auth` and `authority` middleware.
+All routes are protected by `auth` middleware.
 
 ### 3. Livewire Volt Components
 
@@ -234,9 +234,8 @@ When `laravel/fortify` is installed, new users are automatically assigned the ad
 
 2. **Middleware Requirements**
 
-   - All admin routes require `auth` and `authority` middleware
-   - Ensure your application has these middleware configured
-   - The `authority` middleware should come from the `vormiaphp/vormia` package
+   - All admin routes require `auth` middleware
+   - Ensure your application has this middleware configured
 
 3. **Role IDs**
 
@@ -253,7 +252,7 @@ When `laravel/fortify` is installed, new users are automatically assigned the ad
 5. **Route Injection**
 
    - Routes are injected into `routes/web.php`
-   - The package looks for: `Route::middleware(['auth', 'authority'])->group(function () { ... });`
+   - The package looks for: `Route::middleware(['auth'])->group(function () { ... });`
    - If this pattern doesn't exist, routes won't be injected automatically
 
 6. **Custom Modifications**
@@ -448,7 +447,7 @@ route('admin.categories.edit', ['id' => 1])
 **Solution:**
 
 1. Verify routes were injected into `routes/web.php`
-2. Check that the middleware group exists: `Route::middleware(['auth', 'authority'])->group(...)`
+2. Check that the middleware group exists: `Route::middleware(['auth'])->group(...)`
 3. Run `php artisan route:clear` and `php artisan route:cache`
 4. Verify you're logged in and have the required permissions
 

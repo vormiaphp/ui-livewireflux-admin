@@ -2,6 +2,7 @@
 
 namespace Vormia\UILivewireFluxAdmin\Console\Commands;
 
+use Composer\InstalledVersions;
 use Illuminate\Console\Command;
 
 class CheckDependenciesCommand extends Command
@@ -29,29 +30,21 @@ class CheckDependenciesCommand extends Command
         $this->newLine();
 
         $required = [
-            'vormiaphp/vormia' => ['VormiaPHP\Vormia\VormiaServiceProvider', 'Vormia\Vormia\VormiaServiceProvider'],
-            'livewire/volt' => ['Livewire\Volt\Volt'],
+            'vormiaphp/vormia',
+            'livewire/volt',
         ];
 
         $optional = [
-            'livewire/flux' => 'Livewire\Flux\Flux',
-            'laravel/fortify' => 'Laravel\Fortify\Fortify',
+            'livewire/flux',
+            'laravel/fortify',
         ];
 
         $allGood = true;
 
         // Check required packages
         $this->info('Required packages:');
-        foreach ($required as $package => $classes) {
-            $found = false;
-            foreach ((array)$classes as $class) {
-                if (class_exists($class)) {
-                    $found = true;
-                    break;
-                }
-            }
-            
-            if ($found) {
+        foreach ($required as $package) {
+            if (InstalledVersions::isInstalled($package)) {
                 $this->line("  ✓ {$package}");
             } else {
                 $this->error("  ✗ {$package} - MISSING");
@@ -64,8 +57,8 @@ class CheckDependenciesCommand extends Command
 
         // Check optional packages
         $this->info('Optional packages:');
-        foreach ($optional as $package => $class) {
-            if (class_exists($class)) {
+        foreach ($optional as $package) {
+            if (InstalledVersions::isInstalled($package)) {
                 $this->line("  ✓ {$package}");
             } else {
                 $this->warn("  ⚠ {$package} - NOT INSTALLED");

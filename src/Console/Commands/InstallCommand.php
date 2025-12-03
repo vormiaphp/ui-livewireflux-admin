@@ -2,6 +2,7 @@
 
 namespace Vormia\UILivewireFluxAdmin\Console\Commands;
 
+use Composer\InstalledVersions;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Vormia\UILivewireFluxAdmin\UILivewireFlux;
@@ -48,7 +49,7 @@ class InstallCommand extends Command
         $this->injectRoutes();
 
         // Step 3: Inject sidebar menu (if livewire/flux exists)
-        if (class_exists('Livewire\Flux\Flux')) {
+        if (InstalledVersions::isInstalled('livewire/flux')) {
             $this->step('Injecting sidebar menu...');
             $this->injectSidebarMenu();
         } else {
@@ -57,7 +58,7 @@ class InstallCommand extends Command
         }
 
         // Step 4: Update CreateNewUser (if laravel/fortify exists)
-        if (class_exists('Laravel\Fortify\Fortify')) {
+        if (InstalledVersions::isInstalled('laravel/fortify')) {
             $this->step('Updating CreateNewUser action...');
             $this->updateCreateNewUser();
         } else {
@@ -82,21 +83,13 @@ class InstallCommand extends Command
         $this->step('Checking required dependencies...');
 
         $required = [
-            'vormiaphp/vormia' => ['VormiaPHP\Vormia\VormiaServiceProvider', 'Vormia\Vormia\VormiaServiceProvider'],
-            'livewire/volt' => ['Livewire\Volt\Volt'],
+            'vormiaphp/vormia',
+            'livewire/volt',
         ];
 
         $allGood = true;
-        foreach ($required as $package => $classes) {
-            $found = false;
-            foreach ((array)$classes as $class) {
-                if (class_exists($class)) {
-                    $found = true;
-                    break;
-                }
-            }
-            
-            if ($found) {
+        foreach ($required as $package) {
+            if (InstalledVersions::isInstalled($package)) {
                 $this->info("  ✅ {$package}");
             } else {
                 $this->error("  ❌ {$package} - MISSING");
@@ -175,11 +168,11 @@ class InstallCommand extends Command
         // Find the middleware group - try multiple patterns
         $middlewarePatterns = [
             // Standard pattern
-            '/(Route::middleware\(\[[\'"]auth[\'"],\s*[\'"]authority[\'"]\]\)->group\(function\s*\(\)\s*\{)/s',
+            '/(Route::middleware\(\[[\'"]auth[\'"]\]\)->group\(function\s*\(\)\s*\{)/s',
             // With spaces variations
-            '/(Route::middleware\s*\(\s*\[[\'"]auth[\'"],\s*[\'"]authority[\'"]\s*\]\s*\)\s*->\s*group\s*\(\s*function\s*\(\)\s*\{)/s',
+            '/(Route::middleware\s*\(\s*\[[\'"]auth[\'"]\s*\]\s*\)\s*->\s*group\s*\(\s*function\s*\(\)\s*\{)/s',
             // Single quotes
-            '/(Route::middleware\(\[\'auth\',\s*\'authority\'\]\)->group\(function\s*\(\)\s*\{)/s',
+            '/(Route::middleware\(\[\'auth\'\]\)->group\(function\s*\(\)\s*\{)/s',
         ];
 
         $found = false;
@@ -195,7 +188,7 @@ class InstallCommand extends Command
         }
 
         if (!$found) {
-            $this->warn('⚠️  Could not find Route::middleware([\'auth\', \'authority\'])->group in routes/web.php');
+            $this->warn('⚠️  Could not find Route::middleware([\'auth\'])->group in routes/web.php');
             $this->line('   Please manually add the routes from vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php');
             $this->line('   The routes should be placed inside the middleware group.');
         }

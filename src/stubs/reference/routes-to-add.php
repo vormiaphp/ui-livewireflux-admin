@@ -3,7 +3,7 @@
 use Livewire\Volt\Volt;
 
 // Add these routes to your routes/web.php file
-// Place them inside: Route::middleware(['auth', 'authority'])->group(function () { ... });
+// Place them inside: Route::middleware(['auth'])->group(function () { ... });
 
 Route::group(['prefix' => 'admin'], function () {
     // Categories

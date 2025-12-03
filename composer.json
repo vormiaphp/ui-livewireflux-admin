@@ -25,7 +25,10 @@
     "autoload": {
         "psr-4": {
             "Vormia\\UILivewireFluxAdmin\\": "src/"
-        }
+        },
+        "exclude-from-classmap": [
+            "src/stubs/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

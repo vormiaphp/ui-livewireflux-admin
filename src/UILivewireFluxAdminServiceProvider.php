@@ -2,6 +2,7 @@
 
 namespace Vormia\UILivewireFluxAdmin;
 
+use Composer\InstalledVersions;
 use Illuminate\Support\ServiceProvider;
 use Vormia\UILivewireFluxAdmin\Console\Commands\InstallCommand;
 use Vormia\UILivewireFluxAdmin\Console\Commands\HelpCommand;
@@ -48,11 +49,7 @@ class UILivewireFluxAdminServiceProvider extends ServiceProvider
     protected function checkRequiredDependencies(): void
     {
         // Check for required package: vormiaphp/vormia
-        // Try different possible namespaces
-        $vormiaExists = class_exists('VormiaPHP\Vormia\VormiaServiceProvider') ||
-            class_exists('Vormia\Vormia\VormiaServiceProvider');
-
-        if (!$vormiaExists) {
+        if (!InstalledVersions::isInstalled('vormiaphp/vormia')) {
             if ($this->app->runningInConsole()) {
                 $this->app['log']->warning(
                     '[UI Livewire Flux Admin] vormiaphp/vormia package is required. ' .
@@ -62,7 +59,7 @@ class UILivewireFluxAdminServiceProvider extends ServiceProvider
         }
 
         // Check for required package: livewire/volt
-        if (!class_exists('Livewire\Volt\Volt')) {
+        if (!InstalledVersions::isInstalled('livewire/volt')) {
             if ($this->app->runningInConsole()) {
                 $this->app['log']->warning(
                     '[UI Livewire Flux Admin] livewire/volt package is required. ' .
