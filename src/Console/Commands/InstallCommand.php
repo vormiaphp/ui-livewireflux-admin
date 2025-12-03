@@ -119,7 +119,7 @@ class InstallCommand extends Command
     {
         $routesPath = base_path('routes/web.php');
         $routesToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php');
-        
+
         // If developing locally, use local path
         if (!File::exists($routesToAdd)) {
             $routesToAdd = __DIR__ . '/../../stubs/reference/routes-to-add.php';
@@ -137,7 +137,7 @@ class InstallCommand extends Command
 
         $content = File::get($routesPath);
         $routesContent = File::get($routesToAdd);
-        
+
         // Extract just the Route::group part (remove PHP tags and comments)
         $routesContent = preg_replace('/^<\?php\s*/', '', $routesContent);
         $routesContent = preg_replace('/\/\/.*$/m', '', $routesContent);
@@ -208,7 +208,7 @@ class InstallCommand extends Command
     {
         $sidebarPath = resource_path('views/components/layouts/app/sidebar.blade.php');
         $sidebarToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php');
-        
+
         // If developing locally, use local path
         if (!File::exists($sidebarToAdd)) {
             $sidebarToAdd = __DIR__ . '/../../stubs/reference/sidebar-menu-to-add.blade.php';
@@ -227,7 +227,7 @@ class InstallCommand extends Command
 
         $content = File::get($sidebarPath);
         $sidebarContent = File::get($sidebarToAdd);
-        
+
         // Extract just the menu code (remove PHP tags if present)
         // Remove PHP opening tag at the start
         $sidebarContent = preg_replace('/^<\?php\s*/', '', $sidebarContent);
@@ -284,8 +284,10 @@ class InstallCommand extends Command
                 if (preg_match($pattern, $lines[$i])) {
                     // Find the closing tag of this menu item
                     for ($j = $i + 1; $j < min($i + 10, count($lines)); $j++) {
-                        if (preg_match('/<\/flux:navlist\.item>/i', $lines[$j]) || 
-                            preg_match('/\/>/', $lines[$j])) {
+                        if (
+                            preg_match('/<\/flux:navlist\.item>/i', $lines[$j]) ||
+                            preg_match('/\/>/', $lines[$j])
+                        ) {
                             $insertionLine = $j + 1;
                             break 2;
                         }
@@ -303,8 +305,10 @@ class InstallCommand extends Command
         if ($insertionLine === -1) {
             // Look for common patterns after which we can insert
             for ($i = 0; $i < min(30, count($lines)); $i++) {
-                if (preg_match('/<\/flux:navlist\.item>/i', $lines[$i]) || 
-                    preg_match('/<hr\s*\/?>/i', $lines[$i])) {
+                if (
+                    preg_match('/<\/flux:navlist\.item>/i', $lines[$i]) ||
+                    preg_match('/<hr\s*\/?>/i', $lines[$i])
+                ) {
                     $insertionLine = $i + 1;
                     break;
                 }
@@ -337,7 +341,7 @@ class InstallCommand extends Command
     {
         $createNewUserPath = app_path('Actions/Fortify/CreateNewUser.php');
         $stubPath = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/app/Actions/Fortify/CreateNewUser.php');
-        
+
         // If developing locally, use local path
         if (!File::exists($stubPath)) {
             $stubPath = __DIR__ . '/../../stubs/app/Actions/Fortify/CreateNewUser.php';
@@ -360,9 +364,27 @@ class InstallCommand extends Command
             return;
         }
 
+        // Backup original file before replacing it
+        $backupPath = $this->getCreateNewUserBackupPath();
+
+        // Only backup if backup doesn't exist yet (to preserve the true original)
+        if (!File::exists($backupPath)) {
+            File::ensureDirectoryExists(dirname($backupPath));
+            File::copy($createNewUserPath, $backupPath);
+            $this->line('  Original CreateNewUser.php backed up.');
+        }
+
         // Copy stub
         File::copy($stubPath, $createNewUserPath);
         $this->info('✅ CreateNewUser updated successfully.');
+    }
+
+    /**
+     * Get the backup path for CreateNewUser.php
+     */
+    private function getCreateNewUserBackupPath(): string
+    {
+        return storage_path('app/ui-livewireflux-admin-original/CreateNewUser.php');
     }
 
     /**
@@ -411,4 +433,3 @@ class InstallCommand extends Command
         $this->info('✨ Happy coding with UI Livewire Flux Admin!');
     }
 }
-

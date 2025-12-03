@@ -429,19 +429,33 @@ class UninstallCommand extends Command
     private function revertCreateNewUser(): void
     {
         $createNewUserPath = app_path('Actions/Fortify/CreateNewUser.php');
+        $backupPath = $this->getCreateNewUserBackupPath();
 
-        if (!File::exists($createNewUserPath)) {
+        // Delete the modified file
+        if (File::exists($createNewUserPath)) {
+            File::delete($createNewUserPath);
+            $this->line('  Modified CreateNewUser.php deleted.');
+        } else {
             $this->warn('⚠️  CreateNewUser.php not found.');
-            return;
         }
 
-        $content = File::get($createNewUserPath);
+        // Restore from backup if it exists
+        if (File::exists($backupPath)) {
+            File::ensureDirectoryExists(dirname($createNewUserPath));
+            File::copy($backupPath, $createNewUserPath);
+            $this->info('✅ CreateNewUser restored from backup successfully.');
+        } else {
+            $this->warn('⚠️  Original CreateNewUser.php backup not found. Cannot restore original file.');
+            $this->line('   You may need to manually restore CreateNewUser.php from your version control.');
+        }
+    }
 
-        // Remove role attachment line
-        $content = preg_replace('/\s*\/\/ Attach to role\s*\n\s*\$user->roles\(\)->attach\(1\);.*?\n/', '', $content);
-
-        File::put($createNewUserPath, $content);
-        $this->info('✅ CreateNewUser reverted successfully.');
+    /**
+     * Get the backup path for CreateNewUser.php
+     */
+    private function getCreateNewUserBackupPath(): string
+    {
+        return storage_path('app/ui-livewireflux-admin-original/CreateNewUser.php');
     }
 
     /**
