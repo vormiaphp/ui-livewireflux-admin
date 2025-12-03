@@ -1,5 +1,5 @@
 <?php
-// Add this code to resources/views/components/layouts/app/sidebar.php
+// Add this code to resources/views/components/layouts/app/sidebar.blade.php
 // Place it just after line 20 (after the Dashboard menu item)
 
 ?>

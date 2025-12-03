@@ -115,7 +115,7 @@ class UninstallCommand extends Command
             resource_path('views/components/admin-panel.blade.php') => $backupDir . '/views/components/admin-panel.blade.php',
             resource_path('views/livewire/admin') => $backupDir . '/views/livewire/admin',
             base_path('routes/web.php') => $backupDir . '/routes/web.php',
-            resource_path('views/components/layouts/app/sidebar.php') => $backupDir . '/views/components/layouts/app/sidebar.php',
+            resource_path('views/components/layouts/app/sidebar.blade.php') => $backupDir . '/views/components/layouts/app/sidebar.blade.php',
         ];
 
         foreach ($filesToBackup as $source => $destination) {
@@ -133,7 +133,7 @@ class UninstallCommand extends Command
     }
 
     /**
-     * Remove routes from routes/web.php
+     * Remove routes from routes/web.php by exact line matching
      */
     private function removeRoutes(): void
     {
@@ -145,16 +145,100 @@ class UninstallCommand extends Command
         }
 
         $content = File::get($routesPath);
+        $lines = explode("\n", $content);
 
-        // Remove the admin routes group
-        $pattern = '/Route::group\(\[\'prefix\'\s*=>\s*\'admin\'\],\s*function\s*\(\)\s*\{[^}]*Volt::route\([^}]*\};\s*\}\);/s';
-        $content = preg_replace($pattern, '', $content);
+        // Define exact route patterns to match (with flexible whitespace)
+        $routePatterns = [
+            // Categories
+            "/\s*Volt::route\s*\(\s*['\"]categories['\"]\s*,\s*['\"]admin\.control\.categories\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.categories\.index['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]categories\/create['\"]\s*,\s*['\"]admin\.control\.categories\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.categories\.create['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]categories\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.categories\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.categories\.edit['\"]\s*\)\s*;/",
+            
+            // Inheritance
+            "/\s*Volt::route\s*\(\s*['\"]inheritance['\"]\s*,\s*['\"]admin\.control\.inheritance\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.inheritance\.index['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]inheritance\/create['\"]\s*,\s*['\"]admin\.control\.inheritance\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.inheritance\.create['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]inheritance\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.inheritance\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.inheritance\.edit['\"]\s*\)\s*;/",
+            
+            // Countries
+            "/\s*Volt::route\s*\(\s*['\"]countries['\"]\s*,\s*['\"]admin\.control\.locations\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.countries\.index['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]countries\/create['\"]\s*,\s*['\"]admin\.control\.locations\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.countries\.create['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]countries\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.locations\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.countries\.edit['\"]\s*\)\s*;/",
+            
+            // Cities
+            "/\s*Volt::route\s*\(\s*['\"]cities['\"]\s*,\s*['\"]admin\.control\.locations\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.cities\.index['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]cities\/create['\"]\s*,\s*['\"]admin\.control\.locations\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.cities\.create['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]cities\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.locations\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.cities\.edit['\"]\s*\)\s*;/",
+            
+            // Availabilities
+            "/\s*Volt::route\s*\(\s*['\"]availabilities['\"]\s*,\s*['\"]admin\.control\.availability\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.availabilities\.index['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]availabilities\/create['\"]\s*,\s*['\"]admin\.control\.availability\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.availabilities\.create['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]availabilities\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.availability\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.availabilities\.edit['\"]\s*\)\s*;/",
+            
+            // Admins
+            "/\s*Volt::route\s*\(\s*['\"]admins['\"]\s*,\s*['\"]admin\.admins\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.admins\.index['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]admins\/create['\"]\s*,\s*['\"]admin\.admins\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.admins\.create['\"]\s*\)\s*;/",
+            "/\s*Volt::route\s*\(\s*['\"]admins\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.admins\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.admins\.edit['\"]\s*\)\s*;/",
+        ];
+
+        // Also match comment lines that might be associated with these routes
+        $commentPatterns = [
+            "/\s*\/\/\s*Categories/",
+            "/\s*\/\/\s*Inheritance/",
+            "/\s*\/\/\s*Locations\s*-\s*Countries/",
+            "/\s*\/\/\s*Locations\s*-\s*Cities/",
+            "/\s*\/\/\s*Availability\s*taxonomy/",
+            "/\s*\/\/\s*Admins/",
+        ];
+
+        $removedCount = 0;
+        $newLines = [];
+
+        foreach ($lines as $line) {
+            $shouldRemove = false;
+
+            // Check if line matches any route pattern
+            foreach ($routePatterns as $pattern) {
+                if (preg_match($pattern, $line)) {
+                    $shouldRemove = true;
+                    $removedCount++;
+                    break;
+                }
+            }
+
+            // Check if line matches comment patterns (only if it's a comment line)
+            if (!$shouldRemove && preg_match('/^\s*\/\//', $line)) {
+                foreach ($commentPatterns as $pattern) {
+                    if (preg_match($pattern, $line)) {
+                        $shouldRemove = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$shouldRemove) {
+                $newLines[] = $line;
+            }
+        }
+
+        // Remove empty Route::group blocks that might be left behind
+        $content = implode("\n", $newLines);
+        
+        // Remove empty Route::group(['prefix' => 'admin'], function () { }); blocks
+        $content = preg_replace('/Route::group\s*\(\s*\[\s*[\'"]prefix[\'"]\s*=>\s*[\'"]admin[\'"]\s*\]\s*,\s*function\s*\(\s*\)\s*\{\s*\}\s*\)\s*;/s', '', $content);
+        
+        // Remove Route::group opening with only whitespace/comments before closing
+        $content = preg_replace('/Route::group\s*\(\s*\[\s*[\'"]prefix[\'"]\s*=>\s*[\'"]admin[\'"]\s*\]\s*,\s*function\s*\(\s*\)\s*\{\s*(?:\/\/.*?\n\s*)*\}\s*\)\s*;/s', '', $content);
 
         // Clean up extra whitespace
-        $content = preg_replace('/\n\s*\n\s*\n/', "\n\n", $content);
+        $content = preg_replace('/\n\s*\n\s*\n+/', "\n\n", $content);
 
         File::put($routesPath, $content);
-        $this->info('✅ Routes removed successfully.');
+        
+        if ($removedCount > 0) {
+            $this->info("✅ Removed {$removedCount} route(s) successfully.");
+        } else {
+            $this->warn('⚠️  No matching routes found to remove.');
+        }
     }
 
     /**
@@ -162,7 +246,7 @@ class UninstallCommand extends Command
      */
     private function removeSidebarMenu(): void
     {
-        $sidebarPath = resource_path('views/components/layouts/app/sidebar.php');
+        $sidebarPath = resource_path('views/components/layouts/app/sidebar.blade.php');
 
         if (!File::exists($sidebarPath)) {
             $this->warn('⚠️  Sidebar file not found.');

@@ -1,9 +1,8 @@
 <?php
 
-use Livewire\Volt\Volt;
-
 // Add these routes to your routes/web.php file
 // Place them inside: Route::middleware(['auth'])->group(function () { ... });
+// Note: If you have configured your own starterkit, you may need to add: use Livewire\Volt\Volt;
 
 Route::group(['prefix' => 'admin'], function () {
     // Categories
@@ -36,5 +35,3 @@ Route::group(['prefix' => 'admin'], function () {
     Volt::route('admins/create', 'admin.admins.create')->name('admin.admins.create');
     Volt::route('admins/edit/{id}', 'admin.admins.edit')->name('admin.admins.edit');
 });
-
-

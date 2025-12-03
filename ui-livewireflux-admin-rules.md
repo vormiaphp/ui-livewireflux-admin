@@ -44,7 +44,7 @@ src/stubs/resources/views/
 
 The sidebar is located at:
 ```
-resources/views/components/layouts/app/sidebar.php
+resources/views/components/layouts/app/sidebar.blade.php
 ```
 
 ### How Sidebar Works

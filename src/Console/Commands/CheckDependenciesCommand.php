@@ -88,7 +88,7 @@ class CheckDependenciesCommand extends Command
             case 'livewire/flux':
                 $this->line('    → Sidebar navigation links will not be automatically injected.');
                 $this->line('    → You will need to manually add navigation links to:');
-                $this->line('      resources/views/components/layouts/app/sidebar.php');
+                $this->line('      resources/views/components/layouts/app/sidebar.blade.php');
                 $this->line('    → See README.md for the code to add.');
                 break;
 

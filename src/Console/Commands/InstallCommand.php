@@ -54,7 +54,7 @@ class InstallCommand extends Command
             $this->injectSidebarMenu();
         } else {
             $this->warn('⚠️  livewire/flux is not installed. Sidebar menu will not be automatically injected.');
-            $this->line('   You will need to manually add the navigation links to resources/views/components/layouts/app/sidebar.php');
+            $this->line('   You will need to manually add the navigation links to resources/views/components/layouts/app/sidebar.blade.php');
         }
 
         // Step 4: Update CreateNewUser (if laravel/fortify exists)
@@ -182,6 +182,9 @@ class InstallCommand extends Command
                 $content = substr_replace($content, "\n    " . $routesContent . "\n", $insertionPoint, 0);
                 File::put($routesPath, $content);
                 $this->info('✅ Routes injected successfully.');
+                $this->comment('   Note: If you have configured your own starterkit, you may need to add:');
+                $this->line('   use Livewire\Volt\Volt;');
+                $this->line('   at the top of your routes/web.php file.');
                 $found = true;
                 break;
             }
@@ -191,6 +194,10 @@ class InstallCommand extends Command
             $this->warn('⚠️  Could not find Route::middleware([\'auth\'])->group in routes/web.php');
             $this->line('   Please manually add the routes from vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php');
             $this->line('   The routes should be placed inside the middleware group.');
+            $this->newLine();
+            $this->comment('   Note: If you have configured your own starterkit, you may need to add:');
+            $this->line('   use Livewire\Volt\Volt;');
+            $this->line('   at the top of your routes/web.php file.');
         }
     }
 
@@ -199,7 +206,7 @@ class InstallCommand extends Command
      */
     private function injectSidebarMenu(): void
     {
-        $sidebarPath = resource_path('views/components/layouts/app/sidebar.php');
+        $sidebarPath = resource_path('views/components/layouts/app/sidebar.blade.php');
         $sidebarToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.php');
         
         // If developing locally, use local path
@@ -389,8 +396,9 @@ class InstallCommand extends Command
 
         $this->comment('📋 Next steps:');
         $this->line('   1. Review your routes/web.php to ensure routes were added correctly');
-        $this->line('   2. Review your sidebar.blade.php to ensure menu items were added');
-        $this->line('   3. Test your admin routes');
+        $this->line('   2. If you have configured your own starterkit, add: use Livewire\Volt\Volt; at the top of routes/web.php');
+        $this->line('   3. Review your sidebar.blade.php to ensure menu items were added');
+        $this->line('   4. Test your admin routes');
         $this->newLine();
 
         $this->comment('📖 For help and available commands, run: php artisan ui-livewireflux-admin:help');

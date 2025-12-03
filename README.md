@@ -117,12 +117,20 @@ After installation, verify that:
 If the routes were not automatically injected into `routes/web.php`, manually add them:
 
 1. Open `routes/web.php`
-2. Find the `Route::middleware(['auth'])->group(function () { ... });` block
-3. Add the routes from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php` inside this block
+2. **If you have configured your own starterkit**, add the Volt import at the top of the file:
+   ```php
+   use Livewire\Volt\Volt;
+   ```
+3. Find the `Route::middleware(['auth'])->group(function () { ... });` block
+4. Add the routes from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php` inside this block
 
 **Example:**
 
 ```php
+<?php
+
+use Livewire\Volt\Volt; // Add this if you have configured your own starterkit
+
 Route::middleware(['auth'])->group(function () {
     // ... existing routes ...
 
@@ -137,7 +145,7 @@ Route::middleware(['auth'])->group(function () {
 
 If `livewire/flux` is not installed or the sidebar menu wasn't injected:
 
-1. Open `resources/views/components/layouts/app/sidebar.php`
+1. Open `resources/views/components/layouts/app/sidebar.blade.php`
 2. Find the Dashboard menu item
 3. Add the code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.php` after the Dashboard menu item
 
@@ -246,7 +254,7 @@ When `laravel/fortify` is installed, new users are automatically assigned the ad
 
 4. **Sidebar File Location**
 
-   - The package expects the sidebar at: `resources/views/components/layouts/app/sidebar.php`
+   - The package expects the sidebar at: `resources/views/components/layouts/app/sidebar.blade.php`
    - If your sidebar is in a different location, you'll need to manually add the menu items
 
 5. **Route Injection**
@@ -335,7 +343,7 @@ php artisan ui-livewireflux-admin:uninstall
 - `resources/views/components/admin-panel.php`
 - `resources/views/livewire/admin/` directory
 - Routes from `routes/web.php`
-- Sidebar menu items from `sidebar.php`
+- Sidebar menu items from `sidebar.blade.php`
 
 **Force uninstall (skip confirmation):**
 
@@ -344,6 +352,17 @@ php artisan ui-livewireflux-admin:uninstall --force
 ```
 
 **⚠️ Warning:** This action cannot be undone! Make sure you have backups before uninstalling.
+
+**Manual Route Removal:**
+
+If you need to manually remove routes, simply delete routes based on their names from `routes/web.php`:
+
+- `admin.categories.index`, `admin.categories.create`, `admin.categories.edit`
+- `admin.inheritance.index`, `admin.inheritance.create`, `admin.inheritance.edit`
+- `admin.countries.index`, `admin.countries.create`, `admin.countries.edit`
+- `admin.cities.index`, `admin.cities.create`, `admin.cities.edit`
+- `admin.availabilities.index`, `admin.availabilities.create`, `admin.availabilities.edit`
+- `admin.admins.index`, `admin.admins.create`, `admin.admins.edit`
 
 **After uninstallation:**
 
@@ -458,7 +477,7 @@ route('admin.categories.edit', ['id' => 1])
 **Solution:**
 
 1. Check if `livewire/flux` is installed: `composer show livewire/flux`
-2. Verify the sidebar file exists at: `resources/views/components/layouts/app/sidebar.php`
+2. Verify the sidebar file exists at: `resources/views/components/layouts/app/sidebar.blade.php`
 3. Manually add the menu code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.php` if needed
 4. Clear view cache: `php artisan view:clear`
 
