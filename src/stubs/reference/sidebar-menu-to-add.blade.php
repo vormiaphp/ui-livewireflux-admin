@@ -1,5 +1,5 @@
 {{-- Add this code to resources/views/components/layouts/app/sidebar.blade.php --}}
-{{-- Place it just after line 20 (after the Dashboard menu item) --}}
+{{-- Place it just after the closing </flux:navlist.group> tag of the Platform group --}}
 
 @if (auth()->user()?->isAdminOrSuperAdmin())
 	<hr />

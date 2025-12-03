@@ -263,64 +263,45 @@ class InstallCommand extends Command
             return;
         }
 
-        // Find Dashboard menu item - try multiple patterns
-        $dashboardPatterns = [
-            // Look for Dashboard text
-            '/Dashboard/i',
-            // Look for Dashboard route
-            "/route\(['\"]dashboard['\"]\)/i",
-            // Look for flux:navlist.item with Dashboard
-            '/flux:navlist\.item.*Dashboard/i',
-            // Look for wire:navigate with Dashboard
-            '/wire:navigate.*Dashboard/i',
-        ];
-
+        // Find Platform navlist.group - look for the closing tag
         $lines = explode("\n", $content);
         $insertionLine = -1;
 
-        // Try to find Dashboard menu item
-        foreach ($dashboardPatterns as $pattern) {
+        // Pattern to find Platform group closing tag
+        // Look for </flux:navlist.group> after finding Platform heading
+        $inPlatformGroup = false;
+        for ($i = 0; $i < count($lines); $i++) {
+            // Check if this line contains the Platform group opening tag
+            if (preg_match('/<flux:navlist\.group\s+.*?:heading=["\']__\(["\']Platform["\']\)["\'].*?class=["\']grid["\']>/i', $lines[$i])) {
+                $inPlatformGroup = true;
+                continue;
+            }
+
+            // If we're in the Platform group, look for the closing tag
+            if ($inPlatformGroup && preg_match('/<\/flux:navlist\.group>/i', $lines[$i])) {
+                $insertionLine = $i + 1;
+                break;
+            }
+        }
+
+        // Fallback: if Platform group not found, try to find it with more flexible patterns
+        if ($insertionLine === -1) {
+            // Try to find Platform heading with more flexible whitespace
             for ($i = 0; $i < count($lines); $i++) {
-                if (preg_match($pattern, $lines[$i])) {
-                    // Find the closing tag of this menu item
-                    for ($j = $i + 1; $j < min($i + 10, count($lines)); $j++) {
-                        if (
-                            preg_match('/<\/flux:navlist\.item>/i', $lines[$j]) ||
-                            preg_match('/\/>/', $lines[$j])
-                        ) {
+                // Match Platform heading with various whitespace patterns
+                if (preg_match('/<flux:navlist\.group.*?heading.*?Platform.*?>/i', $lines[$i])) {
+                    // Find the closing tag within reasonable distance (next 20 lines)
+                    for ($j = $i + 1; $j < min($i + 20, count($lines)); $j++) {
+                        if (preg_match('/<\/flux:navlist\.group>/i', $lines[$j])) {
                             $insertionLine = $j + 1;
                             break 2;
                         }
                     }
-                    // If no closing tag found, insert after the line with Dashboard
-                    if ($insertionLine === -1) {
-                        $insertionLine = $i + 1;
-                        break 2;
-                    }
                 }
             }
         }
 
-        // Fallback: if Dashboard not found, try to find a reasonable insertion point
-        if ($insertionLine === -1) {
-            // Look for common patterns after which we can insert
-            for ($i = 0; $i < min(30, count($lines)); $i++) {
-                if (
-                    preg_match('/<\/flux:navlist\.item>/i', $lines[$i]) ||
-                    preg_match('/<hr\s*\/?>/i', $lines[$i])
-                ) {
-                    $insertionLine = $i + 1;
-                    break;
-                }
-            }
-        }
-
-        // Final fallback: insert after line 20 if file is long enough
-        if ($insertionLine === -1 && count($lines) >= 20) {
-            $insertionLine = 20;
-        }
-
-        if ($insertionLine !== -1 && $insertionLine < count($lines)) {
+        if ($insertionLine !== -1 && $insertionLine <= count($lines)) {
             // Insert the sidebar content
             $sidebarLines = explode("\n", $sidebarContent);
             array_splice($lines, $insertionLine, 0, $sidebarLines);
@@ -328,8 +309,8 @@ class InstallCommand extends Command
             File::put($sidebarPath, $content);
             $this->info('✅ Sidebar menu injected successfully.');
         } else {
-            $this->warn('⚠️  Could not find insertion point in sidebar file.');
-            $this->line('   Please manually add the sidebar menu code after the Dashboard menu item.');
+            $this->warn('⚠️  Could not find Platform navlist.group in sidebar file.');
+            $this->line('   Please manually add the sidebar menu code after the Platform group closing tag.');
             $this->line('   The menu code should be placed in: ' . $sidebarPath);
         }
     }
