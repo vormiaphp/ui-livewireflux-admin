@@ -118,7 +118,7 @@ If the routes were not automatically injected into `routes/web.php`, manually ad
 
 1. Open `routes/web.php`
 2. Find the `Route::middleware(['auth', 'authority'])->group(function () { ... });` block
-3. Add the routes from `vendor/vormiaphp/ui-livewireflux-admin/routes-to-add.php` inside this block
+3. Add the routes from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php` inside this block
 
 **Example:**
 
@@ -139,7 +139,7 @@ If `livewire/flux` is not installed or the sidebar menu wasn't injected:
 
 1. Open `resources/views/components/layouts/app/sidebar.php`
 2. Find the Dashboard menu item
-3. Add the code from `vendor/vormiaphp/ui-livewireflux-admin/sidebar-menu-to-add.php` after the Dashboard menu item
+3. Add the code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.php` after the Dashboard menu item
 
 **Example:**
 
@@ -388,8 +388,11 @@ UILivewireFlux-Admin/
 │   │                       └── locations/
 │   ├── UILivewireFlux.php
 │   └── UILivewireFluxAdminServiceProvider.php
-├── routes-to-add.php                   # Routes snippet
-├── sidebar-menu-to-add.php             # Sidebar snippet
+├── src/
+│   └── stubs/
+│       └── reference/
+│           ├── routes-to-add.php       # Routes snippet
+│           └── sidebar-menu-to-add.php # Sidebar snippet
 ├── composer.json
 └── README.md
 ```
@@ -457,7 +460,7 @@ route('admin.categories.edit', ['id' => 1])
 
 1. Check if `livewire/flux` is installed: `composer show livewire/flux`
 2. Verify the sidebar file exists at: `resources/views/components/layouts/app/sidebar.php`
-3. Manually add the menu code from `sidebar-menu-to-add.php` if needed
+3. Manually add the menu code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.php` if needed
 4. Clear view cache: `php artisan view:clear`
 
 ### Role Attachment Not Working

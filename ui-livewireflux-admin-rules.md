@@ -50,7 +50,7 @@ resources/views/components/layouts/app/sidebar.php
 ### How Sidebar Works
 
 - The sidebar is automatically injected during package installation (if `livewire/flux` is installed)
-- Sidebar menu items are added from: `sidebar-menu-to-add.php`
+- Sidebar menu items are added from: `src/stubs/reference/sidebar-menu-to-add.php`
 - Menu items use Flux navigation components: `<flux:navlist.item>`
 - Routes are checked using: `request()->routeIs('admin.*')`
 
@@ -994,7 +994,7 @@ When creating a new admin section:
 
 ## Example: Complete New Section
 
-### 1. Create Routes (in routes-to-add.php)
+### 1. Create Routes (in src/stubs/reference/routes-to-add.php)
 
 ```php
 Route::group(['prefix' => 'admin'], function () {

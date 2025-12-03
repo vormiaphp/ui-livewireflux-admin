@@ -37,3 +37,4 @@ Route::group(['prefix' => 'admin'], function () {
     Volt::route('admins/edit/{id}', 'admin.admins.edit')->name('admin.admins.edit');
 });
 
+

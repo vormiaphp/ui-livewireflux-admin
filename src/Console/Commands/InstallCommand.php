@@ -125,11 +125,11 @@ class InstallCommand extends Command
     private function injectRoutes(): void
     {
         $routesPath = base_path('routes/web.php');
-        $routesToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/routes-to-add.php');
+        $routesToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php');
         
         // If developing locally, use local path
         if (!File::exists($routesToAdd)) {
-            $routesToAdd = __DIR__ . '/../../../routes-to-add.php';
+            $routesToAdd = __DIR__ . '/../../stubs/reference/routes-to-add.php';
         }
 
         if (!File::exists($routesPath)) {
@@ -196,7 +196,7 @@ class InstallCommand extends Command
 
         if (!$found) {
             $this->warn('⚠️  Could not find Route::middleware([\'auth\', \'authority\'])->group in routes/web.php');
-            $this->line('   Please manually add the routes from routes-to-add.php');
+            $this->line('   Please manually add the routes from vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php');
             $this->line('   The routes should be placed inside the middleware group.');
         }
     }
@@ -207,11 +207,11 @@ class InstallCommand extends Command
     private function injectSidebarMenu(): void
     {
         $sidebarPath = resource_path('views/components/layouts/app/sidebar.php');
-        $sidebarToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/sidebar-menu-to-add.php');
+        $sidebarToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.php');
         
         // If developing locally, use local path
         if (!File::exists($sidebarToAdd)) {
-            $sidebarToAdd = __DIR__ . '/../../../sidebar-menu-to-add.php';
+            $sidebarToAdd = __DIR__ . '/../../stubs/reference/sidebar-menu-to-add.php';
         }
 
         if (!File::exists($sidebarPath)) {
