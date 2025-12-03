@@ -1,5 +1,10 @@
 # Vormia UI Livewire Flux Admin
 
+# Vormia - Laravel Package
+
+[![Packagist](https://img.shields.io/packagist/v/vormiaphp/ui-livewireflux-admin.svg)](https://packagist.org/packages/vormiaphp/ui-livewireflux-admin)
+[![GitHub](https://img.shields.io/github/stars/vormiaphp/ui-livewireflux-admin.svg)](https://github.com/vormiaphp/ui-livewireflux-admin)
+
 A Laravel package that provides a complete admin panel solution with pre-built components, routes, and views for managing categories, inheritance, locations, availability, and admin users. Built with Livewire Volt and Flux for a modern, reactive admin interface.
 
 ## What is This Package?
