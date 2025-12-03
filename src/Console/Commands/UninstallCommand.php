@@ -336,7 +336,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                    }
+                }
                 }
             }
             // Check for Cities menu item (lines 17-21 in stub)
@@ -347,7 +347,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                    }
+                }
                 }
             }
             // Check for Availability menu item (lines 23-27 in stub)
@@ -358,7 +358,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                    }
+                }
                 }
             }
             // Check for Inheritance menu item (lines 28-32 in stub)
@@ -369,7 +369,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                    }
+                }
                 }
             }
             // Check for Admins group (lines 35-42 in stub)
