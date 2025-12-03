@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2024-12-19
+
+### Added
+
+- **Dark Mode Support**: Full dark mode support for all admin panel components and views
+- **Improved Uninstallation**: Enhanced uninstall process that properly clears sidebar menu items and restores default configurations
+
+### Improved
+
+- **Route Removal**: Route removal process now completes without errors, ensuring clean uninstallation
+- **Sidebar Menu Clearing**: Uninstall command now properly clears all sidebar menu items added during installation
+- **Default Restoration**: Fortify `CreateNewUser.php` file is now restored to default state during uninstallation, removing any custom role attachments
+
+### Changed
+
+- **Backward Compatibility**: This release maintains full backward compatibility with previous versions while introducing new features and improvements
+
 ## [1.0.5] - 2024-12-19
 
 ### Improved

@@ -30,15 +30,10 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        $user = User::create([
+        return User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
-
-        // Attach to role
-        $user->roles()->attach(1); // 1 for admin
-
-        return $user;
     }
 }
