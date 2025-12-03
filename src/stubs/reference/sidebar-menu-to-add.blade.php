@@ -1,9 +1,13 @@
 {{-- Add this code to resources/views/components/layouts/app/sidebar.blade.php --}}
 {{-- Place it just after line 20 (after the Dashboard menu item) --}}
 
-<span class="h-px w-full bg-zinc-200 dark:bg-zinc-700"></span>
 @if (auth()->user()?->isAdminOrSuperAdmin())
 	<hr />
+
+	<flux:navlist.item icon="tag" :href="route('admin.categories.index')"
+		:current="request()->routeIs('admin.categories.*')" wire:navigate>
+		{{ __('Categories') }}
+	</flux:navlist.item>
 
 	<flux:navlist.item icon="map-pin" :href="route('admin.countries.index')"
 		:current="request()->routeIs('admin.countries.*')" wire:navigate>
