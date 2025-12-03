@@ -151,15 +151,17 @@ Route::middleware(['auth'])->group(function () {
 If `livewire/flux` is not installed or the sidebar menu wasn't injected:
 
 1. Open `resources/views/components/layouts/app/sidebar.blade.php`
-2. Find the Dashboard menu item
-3. Add the code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php` after the Dashboard menu item
+2. Find the Platform `navlist.group` (the group containing the Dashboard menu item)
+3. Add the code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php` after the closing `</flux:navlist.group>` tag of the Platform group
 
 **Example:**
 
 ```php
-<flux:navlist.item icon="home" :href="route('dashboard')" wire:navigate>
-    {{ __('Dashboard') }}
-</flux:navlist.item>
+<flux:navlist.group :heading="__('Platform')" class="grid">
+    <flux:navlist.item icon="home" :href="route('dashboard')" wire:navigate>
+        {{ __('Dashboard') }}
+    </flux:navlist.item>
+</flux:navlist.group>
 
 <!-- Add admin menu items here -->
 ```

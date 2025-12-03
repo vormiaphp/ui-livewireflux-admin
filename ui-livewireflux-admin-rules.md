@@ -51,6 +51,7 @@ resources/views/components/layouts/app/sidebar.blade.php
 
 - The sidebar is automatically injected during package installation (if `livewire/flux` is installed)
 - Sidebar menu items are added from: `src/stubs/reference/sidebar-menu-to-add.blade.php`
+- Menu items are inserted **after the closing `</flux:navlist.group>` tag of the Platform group** (the group containing the Dashboard menu item)
 - Menu items use Flux navigation components: `<flux:navlist.item>`
 - Routes are checked using: `request()->routeIs('admin.*')`
 
