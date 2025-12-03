@@ -242,7 +242,7 @@ class UninstallCommand extends Command
     }
 
     /**
-     * Remove sidebar menu code
+     * Remove sidebar menu code by exact line matching
      */
     private function removeSidebarMenu(): void
     {
@@ -254,16 +254,173 @@ class UninstallCommand extends Command
         }
 
         $content = File::get($sidebarPath);
+        $lines = explode("\n", $content);
 
-        // Remove the admin menu section
-        $pattern = '/<span class="h-px w-full bg-zinc-200 dark:bg-zinc-700"><\/span>.*?@endif\s*@if \(auth\(\)->user\(\)\?->isSuperAdmin\(\)\).*?@endif/s';
-        $content = preg_replace($pattern, '', $content);
+        $removedCount = 0;
+        $newLines = [];
+        $inMenuBlock = false;
+        $inSuperAdminBlock = false;
+        $skipUntilCloseTag = false;
+        $currentMenuItem = null;
+
+        for ($i = 0; $i < count($lines); $i++) {
+            $line = $lines[$i];
+            $trimmedLine = trim($line);
+            $shouldRemove = false;
+
+            // Check for separator span
+            if (preg_match('/<span\s+class=["\']h-px\s+w-full\s+bg-zinc-200\s+dark:bg-zinc-700["\']><\/span>/', $line)) {
+                $shouldRemove = true;
+                $removedCount++;
+            }
+            // Check for @if (auth()->user()?->isAdminOrSuperAdmin())
+            elseif (preg_match('/@if\s*\(\s*auth\(\)\s*->\s*user\(\)\s*\?->\s*isAdminOrSuperAdmin\(\)\s*\)/', $line)) {
+                $shouldRemove = true;
+                $inMenuBlock = true;
+                $removedCount++;
+            }
+            // Check for @endif (closing the admin block)
+            elseif ($inMenuBlock && preg_match('/@endif/', $line)) {
+                $shouldRemove = true;
+                $inMenuBlock = false;
+                $removedCount++;
+            }
+            // Check for @if (auth()->user()?->isSuperAdmin())
+            elseif (preg_match('/@if\s*\(\s*auth\(\)\s*->\s*user\(\)\s*\?->\s*isSuperAdmin\(\)\s*\)/', $line)) {
+                $shouldRemove = true;
+                $inSuperAdminBlock = true;
+                $removedCount++;
+            }
+            // Check for @endif (closing the super admin block)
+            elseif ($inSuperAdminBlock && preg_match('/@endif/', $line)) {
+                $shouldRemove = true;
+                $inSuperAdminBlock = false;
+                $removedCount++;
+            }
+            // Check for HR tags within menu blocks
+            elseif (($inMenuBlock || $inSuperAdminBlock) && preg_match('/<hr\s*\/?>/', $trimmedLine)) {
+                $shouldRemove = true;
+                $removedCount++;
+            }
+            // Check for Countries menu item - opening tag
+            elseif (preg_match('/<flux:navlist\.item\s+icon=["\']map-pin["\'].*?route\(["\']admin\.countries\.index["\']\)/s', $line)) {
+                $shouldRemove = true;
+                $currentMenuItem = 'countries';
+                $removedCount++;
+            }
+            // Check for Countries menu item - content and closing tag
+            elseif ($currentMenuItem === 'countries' && (
+                preg_match('/\{\{\s*__\(["\']Countries["\']\)\s*\}\}/', $line) ||
+                preg_match('/<\/flux:navlist\.item>/', $trimmedLine)
+            )) {
+                $shouldRemove = true;
+                if (preg_match('/<\/flux:navlist\.item>/', $trimmedLine)) {
+                    $currentMenuItem = null;
+                }
+                $removedCount++;
+            }
+            // Check for Cities menu item - opening tag
+            elseif (preg_match('/<flux:navlist\.item\s+icon=["\']building-office["\'].*?route\(["\']admin\.cities\.index["\']\)/s', $line)) {
+                $shouldRemove = true;
+                $currentMenuItem = 'cities';
+                $removedCount++;
+            }
+            // Check for Cities menu item - content and closing tag
+            elseif ($currentMenuItem === 'cities' && (
+                preg_match('/\{\{\s*__\(["\']Cities["\']\)\s*\}\}/', $line) ||
+                preg_match('/<\/flux:navlist\.item>/', $trimmedLine)
+            )) {
+                $shouldRemove = true;
+                if (preg_match('/<\/flux:navlist\.item>/', $trimmedLine)) {
+                    $currentMenuItem = null;
+                }
+                $removedCount++;
+            }
+            // Check for Availability menu item - opening tag
+            elseif (preg_match('/<flux:navlist\.item\s+icon=["\']check-circle["\'].*?route\(["\']admin\.availabilities\.index["\']\)/s', $line)) {
+                $shouldRemove = true;
+                $currentMenuItem = 'availability';
+                $removedCount++;
+            }
+            // Check for Availability menu item - content and closing tag
+            elseif ($currentMenuItem === 'availability' && (
+                preg_match('/\{\{\s*__\(["\']Availability["\']\)\s*\}\}/', $line) ||
+                preg_match('/<\/flux:navlist\.item>/', $trimmedLine)
+            )) {
+                $shouldRemove = true;
+                if (preg_match('/<\/flux:navlist\.item>/', $trimmedLine)) {
+                    $currentMenuItem = null;
+                }
+                $removedCount++;
+            }
+            // Check for Inheritance menu item - opening tag
+            elseif (preg_match('/<flux:navlist\.item\s+icon=["\']folder-git-2["\'].*?route\(["\']admin\.inheritance\.index["\']\)/s', $line)) {
+                $shouldRemove = true;
+                $currentMenuItem = 'inheritance';
+                $removedCount++;
+            }
+            // Check for Inheritance menu item - content and closing tag
+            elseif ($currentMenuItem === 'inheritance' && (
+                preg_match('/\{\{\s*__\(["\']Inheritance["\']\)\s*\}\}/', $line) ||
+                preg_match('/<\/flux:navlist\.item>/', $trimmedLine)
+            )) {
+                $shouldRemove = true;
+                if (preg_match('/<\/flux:navlist\.item>/', $trimmedLine)) {
+                    $currentMenuItem = null;
+                }
+                $removedCount++;
+            }
+            // Check for Admins group - opening tag
+            elseif (preg_match('/<flux:navlist\.group\s+:heading=["\']__\(["\']Admin["\']\)["\'].*?class=["\']grid["\']>/', $line)) {
+                $shouldRemove = true;
+                $currentMenuItem = 'admins-group';
+                $removedCount++;
+            }
+            // Check for Admins menu item - opening tag
+            elseif (preg_match('/<flux:navlist\.item\s+icon=["\']shield-check["\'].*?route\(["\']admin\.admins\.index["\']\)/s', $line)) {
+                $shouldRemove = true;
+                $currentMenuItem = 'admins';
+                $removedCount++;
+            }
+            // Check for Admins menu item - content and closing tag
+            elseif ($currentMenuItem === 'admins' && (
+                preg_match('/\{\{\s*__\(["\']Admins["\']\)\s*\}\}/', $line) ||
+                preg_match('/<\/flux:navlist\.item>/', $trimmedLine)
+            )) {
+                $shouldRemove = true;
+                if (preg_match('/<\/flux:navlist\.item>/', $trimmedLine)) {
+                    $currentMenuItem = 'admins-group';
+                }
+                $removedCount++;
+            }
+            // Check for Admins group - closing tag
+            elseif ($currentMenuItem === 'admins-group' && preg_match('/<\/flux:navlist\.group>/', $trimmedLine)) {
+                $shouldRemove = true;
+                $currentMenuItem = null;
+                $removedCount++;
+            }
+            // Check for closing flux:navlist.item tags (fallback for any remaining)
+            elseif (($inMenuBlock || $inSuperAdminBlock) && preg_match('/<\/flux:navlist\.item>/', $trimmedLine) && $currentMenuItem === null) {
+                $shouldRemove = true;
+                $removedCount++;
+            }
+
+            if (!$shouldRemove) {
+                $newLines[] = $line;
+            }
+        }
 
         // Clean up extra whitespace
-        $content = preg_replace('/\n\s*\n\s*\n/', "\n\n", $content);
+        $content = implode("\n", $newLines);
+        $content = preg_replace('/\n\s*\n\s*\n+/', "\n\n", $content);
 
         File::put($sidebarPath, $content);
-        $this->info('✅ Sidebar menu removed successfully.');
+        
+        if ($removedCount > 0) {
+            $this->info("✅ Removed {$removedCount} sidebar menu item(s) successfully.");
+        } else {
+            $this->warn('⚠️  No matching sidebar menu items found to remove.');
+        }
     }
 
     /**
