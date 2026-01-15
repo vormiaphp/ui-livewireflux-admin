@@ -100,12 +100,7 @@ new class extends Component {
         }
 
         // Conditional validation for picture
-        $pictureRules = 'image|mimes:jpg,jpeg,png,webp|max:2048';
-        if (empty($this->currentPhoto)) {
-            $pictureRules = 'nullable|' . $pictureRules;
-        } else {
-            $pictureRules = 'nullable|' . $pictureRules;
-        }
+        $pictureRules = 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048';
 
         // Validate the form
         $validated = Validator::make(
@@ -124,7 +119,7 @@ new class extends Component {
                 'phone' => ['nullable', 'string', 'max:20'],
                 'whatsapp_number' => ['nullable', 'string', 'max:20'],
                 'password' => $passwordRules,
-                'photo' => [$pictureRules],
+                'photo' => $pictureRules, // ✅ Remove the array wrapper
             ],
         )->validate();
 
@@ -220,8 +215,9 @@ new class extends Component {
 					<div class="grid grid-cols-1 gap-x-8 gap-y-10 pb-12 md:grid-cols-3">
 						<div>
 							<h2 class="text-base/7 font-semibold text-gray-900 dark:text-gray-100">Admin Information</h2>
-							<p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-300">Update the admin's information below. All fields marked with <span
-									class="text-red-500">*</span> are required. Leave password fields empty to keep current password.</p>
+							<p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-300">Update the admin's information below. All fields
+								marked with <span class="text-red-500">*</span> are required. Leave password fields empty to keep current
+								password.</p>
 						</div>
 
 						<div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
@@ -238,7 +234,8 @@ new class extends Component {
 							</div>
 
 							<div class="col-span-full">
-								<label for="email" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100 required">Email</label>
+								<label for="email"
+									class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100 required">Email</label>
 								<div class="mt-2">
 									<div
 										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -262,7 +259,8 @@ new class extends Component {
 							</div>
 
 							<div class="col-span-full">
-								<label for="whatsapp_number" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">WhatsApp Number</label>
+								<label for="whatsapp_number" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">WhatsApp
+									Number</label>
 								<div class="mt-2">
 									<div
 										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -281,7 +279,8 @@ new class extends Component {
 										<input :type="showPassword ? 'text' : 'password'" id="password" wire:model="password"
 											placeholder="Leave empty to keep current password"
 											class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none sm:text-sm/6" />
-										<button type="button" x-on:click="showPassword = !showPassword" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+										<button type="button" x-on:click="showPassword = !showPassword"
+											class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
 											<svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
 												stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
 												<path stroke-linecap="round" stroke-linejoin="round"
@@ -296,11 +295,13 @@ new class extends Component {
 									</div>
 									<span class="text-red-500 text-sm italic "> {{ $errors->first('password') }}</span>
 								</div>
-								<p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Leave password fields empty to keep the current password.</p>
+								<p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Leave password fields empty to keep the current
+									password.</p>
 							</div>
 
 							<div class="col-span-full">
-								<label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Confirm Password</label>
+								<label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Confirm
+									Password</label>
 								<div class="mt-2">
 									<div
 										class="flex items-center rounded-md bg-white dark:bg-gray-700 pl-3 outline-1 -outline-offset-1 outline-gray-300 dark:outline-gray-600 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -341,13 +342,15 @@ new class extends Component {
 										</button>
 									</div>
 								@endif
-								<p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Upload a new photo to replace the current one (JPG, PNG, or WebP
+								<p class="mt-3 text-sm/6 text-gray-600 dark:text-gray-300">Upload a new photo to replace the current one (JPG,
+									PNG, or WebP
 									format, max 2MB).</p>
 							</div>
 
 							<div class="col-span-full">
 								<div class="flex items-center justify-end gap-x-3 border-t border-gray-900/10 dark:border-gray-100/10 pt-4">
-									<button type="button" wire:click="cancel" class="text-sm font-semibold text-gray-900 dark:text-gray-100">Cancel</button>
+									<button type="button" wire:click="cancel"
+										class="text-sm font-semibold text-gray-900 dark:text-gray-100">Cancel</button>
 
 									<button type="submit" wire:loading.attr="disabled"
 										class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
