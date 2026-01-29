@@ -149,6 +149,9 @@ class UILivewireFlux
 
         foreach ($this->filesystem->allFiles($source) as $file) {
             $relativePath = ltrim(str_replace($source, '', $file->getPathname()), '/\\');
+            if (str_ends_with($file->getFilename(), '.backup')) {
+                continue;
+            }
             $destFile = rtrim($destination, '/\\') . '/' . $relativePath;
 
             if ($this->filesystem->exists($destFile)) {
@@ -200,6 +203,7 @@ class UILivewireFlux
         $filesToRemove = [
             $this->appPath('View/Components/AdminPanel.php'),
             $this->appPath('Actions/Fortify/CreateNewUser.php'),
+            $this->appPath('Actions/Fortify/EnsureUserIsActive.php'),
             $this->resourcePath('views/components/admin-panel.blade.php'),
             $this->resourcePath('views/livewire/admin'),
         ];
@@ -229,6 +233,9 @@ class UILivewireFlux
 
         // Copy files
         foreach ($this->filesystem->allFiles($source) as $file) {
+            if (str_ends_with($file->getFilename(), '.backup')) {
+                continue;
+            }
             $relativePath = ltrim(str_replace($source, '', $file->getPathname()), '/\\');
             $destPath = rtrim($destination, '/\\') . '/' . $relativePath;
 

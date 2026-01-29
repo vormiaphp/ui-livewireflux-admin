@@ -40,6 +40,7 @@ class UninstallCommand extends Command
         $this->warn('   • Remove routes from routes/web.php');
         $this->warn('   • Remove sidebar menu code');
         $this->warn('   • Revert CreateNewUser changes');
+        $this->warn('   • Remove EnsureUserIsActive and revert FortifyServiceProvider');
         $this->newLine();
 
         if (!$force && !$this->confirm('Are you absolutely sure you want to uninstall?', false)) {
@@ -83,7 +84,11 @@ class UninstallCommand extends Command
         $this->step('Reverting CreateNewUser changes...');
         $this->revertCreateNewUser();
 
-        // Step 6: Clear caches
+        // Step 6: Revert Fortify (EnsureUserIsActive removed by Step 2; restore FortifyServiceProvider from package .backup)
+        $this->step('Reverting Fortify (EnsureUserIsActive and FortifyServiceProvider)...');
+        $this->revertFortify();
+
+        // Step 7: Clear caches
         $this->step('Clearing application caches...');
         $this->clearCaches();
 
@@ -112,6 +117,8 @@ class UninstallCommand extends Command
         $filesToBackup = [
             app_path('View/Components/AdminPanel.php') => $backupDir . '/View/Components/AdminPanel.php',
             app_path('Actions/Fortify/CreateNewUser.php') => $backupDir . '/Actions/Fortify/CreateNewUser.php',
+            app_path('Actions/Fortify/EnsureUserIsActive.php') => $backupDir . '/Actions/Fortify/EnsureUserIsActive.php',
+            app_path('Providers/FortifyServiceProvider.php') => $backupDir . '/Providers/FortifyServiceProvider.php',
             resource_path('views/components/admin-panel.blade.php') => $backupDir . '/views/components/admin-panel.blade.php',
             resource_path('views/livewire/admin') => $backupDir . '/views/livewire/admin',
             base_path('routes/web.php') => $backupDir . '/routes/web.php',
@@ -153,27 +160,27 @@ class UninstallCommand extends Command
             "/\s*Volt::route\s*\(\s*['\"]categories['\"]\s*,\s*['\"]admin\.control\.categories\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.categories\.index['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]categories\/create['\"]\s*,\s*['\"]admin\.control\.categories\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.categories\.create['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]categories\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.categories\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.categories\.edit['\"]\s*\)\s*;/",
-            
+
             // Inheritance
             "/\s*Volt::route\s*\(\s*['\"]inheritance['\"]\s*,\s*['\"]admin\.control\.inheritance\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.inheritance\.index['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]inheritance\/create['\"]\s*,\s*['\"]admin\.control\.inheritance\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.inheritance\.create['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]inheritance\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.inheritance\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.inheritance\.edit['\"]\s*\)\s*;/",
-            
+
             // Countries
             "/\s*Volt::route\s*\(\s*['\"]countries['\"]\s*,\s*['\"]admin\.control\.locations\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.countries\.index['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]countries\/create['\"]\s*,\s*['\"]admin\.control\.locations\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.countries\.create['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]countries\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.locations\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.countries\.edit['\"]\s*\)\s*;/",
-            
+
             // Cities
             "/\s*Volt::route\s*\(\s*['\"]cities['\"]\s*,\s*['\"]admin\.control\.locations\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.cities\.index['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]cities\/create['\"]\s*,\s*['\"]admin\.control\.locations\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.cities\.create['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]cities\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.locations\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.cities\.edit['\"]\s*\)\s*;/",
-            
+
             // Availabilities
             "/\s*Volt::route\s*\(\s*['\"]availabilities['\"]\s*,\s*['\"]admin\.control\.availability\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.availabilities\.index['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]availabilities\/create['\"]\s*,\s*['\"]admin\.control\.availability\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.availabilities\.create['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]availabilities\/edit\/\{id\}['\"]\s*,\s*['\"]admin\.control\.availability\.edit['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.availabilities\.edit['\"]\s*\)\s*;/",
-            
+
             // Admins
             "/\s*Volt::route\s*\(\s*['\"]admins['\"]\s*,\s*['\"]admin\.admins\.index['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.admins\.index['\"]\s*\)\s*;/",
             "/\s*Volt::route\s*\(\s*['\"]admins\/create['\"]\s*,\s*['\"]admin\.admins\.create['\"]\s*\)\s*->name\s*\(\s*['\"]admin\.admins\.create['\"]\s*\)\s*;/",
@@ -222,10 +229,10 @@ class UninstallCommand extends Command
 
         // Remove empty Route::group blocks that might be left behind
         $content = implode("\n", $newLines);
-        
+
         // Remove empty Route::group(['prefix' => 'admin'], function () { }); blocks
         $content = preg_replace('/Route::group\s*\(\s*\[\s*[\'"]prefix[\'"]\s*=>\s*[\'"]admin[\'"]\s*\]\s*,\s*function\s*\(\s*\)\s*\{\s*\}\s*\)\s*;/s', '', $content);
-        
+
         // Remove Route::group opening with only whitespace/comments before closing
         $content = preg_replace('/Route::group\s*\(\s*\[\s*[\'"]prefix[\'"]\s*=>\s*[\'"]admin[\'"]\s*\]\s*,\s*function\s*\(\s*\)\s*\{\s*(?:\/\/.*?\n\s*)*\}\s*\)\s*;/s', '', $content);
 
@@ -233,7 +240,7 @@ class UninstallCommand extends Command
         $content = preg_replace('/\n\s*\n\s*\n+/', "\n\n", $content);
 
         File::put($routesPath, $content);
-        
+
         if ($removedCount > 0) {
             $this->info("✅ Removed {$removedCount} route(s) successfully.");
         } else {
@@ -272,8 +279,10 @@ class UninstallCommand extends Command
         $menuLines = [];
         foreach ($stubLines as $line) {
             // Skip Blade comments and empty lines at the start
-            if (preg_match('/^\s*\{\{--.*--\}\}\s*$/', $line) || 
-                (empty($menuLines) && trim($line) === '')) {
+            if (
+                preg_match('/^\s*\{\{--.*--\}\}\s*$/', $line) ||
+                (empty($menuLines) && trim($line) === '')
+            ) {
                 continue;
             }
             $menuLines[] = $line;
@@ -336,7 +345,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                }
+                    }
                 }
             }
             // Check for Cities menu item (lines 17-21 in stub)
@@ -347,7 +356,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                }
+                    }
                 }
             }
             // Check for Availability menu item (lines 23-27 in stub)
@@ -358,7 +367,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                }
+                    }
                 }
             }
             // Check for Inheritance menu item (lines 28-32 in stub)
@@ -369,7 +378,7 @@ class UninstallCommand extends Command
                     $linesToRemove[$j] = true;
                     if (preg_match('/<\/flux:navlist\.item>/', $lines[$j])) {
                         break;
-                }
+                    }
                 }
             }
             // Check for Admins group (lines 35-42 in stub)
@@ -423,7 +432,7 @@ class UninstallCommand extends Command
         $content = preg_replace('/\n\s*\n\s*\n+/', "\n\n", $content);
 
         File::put($sidebarPath, $content);
-        
+
         if ($removedCount > 0) {
             $this->info("✅ Removed {$removedCount} sidebar menu item(s) successfully.");
         } else {
@@ -445,7 +454,7 @@ class UninstallCommand extends Command
             $this->warn('⚠️  Original CreateNewUser.backup not found at: ' . $backupPath);
             $this->warn('⚠️  Cannot restore original file. The installed stub will be deleted, but original cannot be restored.');
             $this->line('   You may need to manually restore CreateNewUser.php from your version control.');
-            
+
             // Still delete the installed stub if it exists
             if (File::exists($createNewUserPath)) {
                 try {
@@ -506,6 +515,35 @@ class UninstallCommand extends Command
     }
 
     /**
+     * Revert Fortify: copy package's FortifyServiceProvider.backup to app/Providers/FortifyServiceProvider.php.
+     * EnsureUserIsActive.php is already removed by removeInstalledFiles().
+     */
+    private function revertFortify(): void
+    {
+        $backupStub = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/app/Providers/FortifyServiceProvider.backup');
+        if (!File::exists($backupStub)) {
+            $backupStub = __DIR__ . '/../../stubs/app/Providers/FortifyServiceProvider.backup';
+        }
+
+        $fortifyProviderDest = app_path('Providers/FortifyServiceProvider.php');
+
+        if (!File::exists($backupStub)) {
+            $this->warn('⚠️  FortifyServiceProvider.backup not found in package.');
+            $this->warn('⚠️  Check and update app/Providers/FortifyServiceProvider.php and app/Actions/Fortify/ manually if needed.');
+            return;
+        }
+
+        try {
+            File::ensureDirectoryExists(dirname($fortifyProviderDest));
+            File::copy($backupStub, $fortifyProviderDest);
+            $this->info('✅ FortifyServiceProvider restored from package backup successfully.');
+        } catch (\Exception $e) {
+            $this->error('❌ Failed to restore FortifyServiceProvider.php: ' . $e->getMessage());
+            $this->warn('⚠️  Check and update app/Providers/FortifyServiceProvider.php and app/Actions/Fortify/ manually if auto-update failed.');
+        }
+    }
+
+    /**
      * Clear application caches
      */
     private function clearCaches()
@@ -543,6 +581,7 @@ class UninstallCommand extends Command
         $this->line('   ✅ Routes from routes/web.php');
         $this->line('   ✅ Sidebar menu code');
         $this->line('   ✅ CreateNewUser role attachment');
+        $this->line('   ✅ EnsureUserIsActive removed; FortifyServiceProvider reverted from package backup');
         $this->line('   ✅ Application caches cleared');
         $this->line('   ✅ Final backup created in storage/app/');
         $this->newLine();
@@ -553,7 +592,9 @@ class UninstallCommand extends Command
         $this->line('   3. Review your routes/web.php and sidebar.blade.php for any remaining code');
         $this->newLine();
 
+        $this->warn('⚠️  If automatic update failed, check and update app/Providers/FortifyServiceProvider.php and app/Actions/Fortify/ manually.');
+        $this->newLine();
+
         $this->info('✨ Thank you for using UI Livewire Flux Admin!');
     }
 }
-

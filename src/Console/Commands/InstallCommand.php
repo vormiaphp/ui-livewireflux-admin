@@ -61,6 +61,8 @@ class InstallCommand extends Command
         if (InstalledVersions::isInstalled('laravel/fortify')) {
             $this->step('Updating CreateNewUser action...');
             $this->updateCreateNewUser();
+            $this->step('Updating Fortify (EnsureUserIsActive and FortifyServiceProvider)...');
+            $this->updateFortifyEnsureUserIsActive();
         } else {
             $this->warn('⚠️  laravel/fortify is not installed. CreateNewUser will not be automatically updated.');
             $this->line('   You will need to manually attach the admin role (ID: 1) to new users.');
@@ -377,6 +379,46 @@ class InstallCommand extends Command
     private function getCreateNewUserBackupPath(): string
     {
         return app_path('Actions/Fortify/CreateNewUser.backup');
+    }
+
+    /**
+     * Copy EnsureUserIsActive.php and FortifyServiceProvider.php from package stubs to app (override).
+     */
+    private function updateFortifyEnsureUserIsActive(): void
+    {
+        $stubBase = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs');
+        if (!File::exists($stubBase)) {
+            $stubBase = __DIR__ . '/../../stubs';
+        }
+
+        $ensureUserIsActiveStub = $stubBase . '/app/Actions/Fortify/EnsureUserIsActive.php';
+        $fortifyProviderStub = $stubBase . '/app/Providers/FortifyServiceProvider.php';
+        $ensureUserIsActiveDest = app_path('Actions/Fortify/EnsureUserIsActive.php');
+        $fortifyProviderDest = app_path('Providers/FortifyServiceProvider.php');
+
+        if (!File::exists($ensureUserIsActiveStub)) {
+            $this->warn('⚠️  EnsureUserIsActive.php stub not found. Skipping.');
+        } else {
+            try {
+                File::ensureDirectoryExists(dirname($ensureUserIsActiveDest));
+                File::copy($ensureUserIsActiveStub, $ensureUserIsActiveDest);
+                $this->info('✅ EnsureUserIsActive.php copied successfully.');
+            } catch (\Exception $e) {
+                $this->error('❌ Failed to copy EnsureUserIsActive.php: ' . $e->getMessage());
+            }
+        }
+
+        if (!File::exists($fortifyProviderStub)) {
+            $this->warn('⚠️  FortifyServiceProvider.php stub not found. Skipping.');
+        } else {
+            try {
+                File::ensureDirectoryExists(dirname($fortifyProviderDest));
+                File::copy($fortifyProviderStub, $fortifyProviderDest);
+                $this->info('✅ FortifyServiceProvider.php overridden successfully.');
+            } catch (\Exception $e) {
+                $this->error('❌ Failed to override FortifyServiceProvider.php: ' . $e->getMessage());
+            }
+        }
     }
 
     /**
