@@ -57,15 +57,12 @@ class InstallCommand extends Command
             $this->line('   You will need to manually add the navigation links to resources/views/components/layouts/app/sidebar.blade.php');
         }
 
-        // Step 4: Update CreateNewUser (if laravel/fortify exists)
+        // Step 4: Copy EnsureUserIsActive (if laravel/fortify exists)
         if (InstalledVersions::isInstalled('laravel/fortify')) {
-            $this->step('Updating CreateNewUser action...');
-            $this->updateCreateNewUser();
-            $this->step('Updating Fortify (EnsureUserIsActive and FortifyServiceProvider)...');
-            $this->updateFortifyEnsureUserIsActive();
+            $this->step('Copying EnsureUserIsActive action...');
+            $this->copyEnsureUserIsActiveOnly();
         } else {
-            $this->warn('⚠️  laravel/fortify is not installed. CreateNewUser will not be automatically updated.');
-            $this->line('   You will need to manually attach the admin role (ID: 1) to new users.');
+            $this->warn('⚠️  laravel/fortify is not installed. EnsureUserIsActive will not be copied.');
         }
 
         // Step 5: Clear caches
@@ -167,14 +164,11 @@ class InstallCommand extends Command
             return;
         }
 
-        // Find the middleware group - try multiple patterns
+        // Find the middleware group - try multiple patterns (auth, auth+verified)
         $middlewarePatterns = [
-            // Standard pattern
+            '/(Route::middleware\(\[\s*[\'"]auth[\'"]\s*,\s*[\'"]verified[\'"]\s*\]\)->group\(function\s*\(\)\s*\{)/s',
             '/(Route::middleware\(\[[\'"]auth[\'"]\]\)->group\(function\s*\(\)\s*\{)/s',
-            // With spaces variations
             '/(Route::middleware\s*\(\s*\[[\'"]auth[\'"]\s*\]\s*\)\s*->\s*group\s*\(\s*function\s*\(\)\s*\{)/s',
-            // Single quotes
-            '/(Route::middleware\(\[\'auth\'\]\)->group\(function\s*\(\)\s*\{)/s',
         ];
 
         $found = false;
@@ -184,22 +178,15 @@ class InstallCommand extends Command
                 $content = substr_replace($content, "\n    " . $routesContent . "\n", $insertionPoint, 0);
                 File::put($routesPath, $content);
                 $this->info('✅ Routes injected successfully.');
-                $this->comment('   Note: If you have configured your own starterkit, you may need to add:');
-                $this->line('   use Livewire\Volt\Volt;');
-                $this->line('   at the top of your routes/web.php file.');
                 $found = true;
                 break;
             }
         }
 
         if (!$found) {
-            $this->warn('⚠️  Could not find Route::middleware([\'auth\'])->group in routes/web.php');
+            $this->warn('⚠️  Could not find auth middleware group in routes/web.php');
             $this->line('   Please manually add the routes from vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php');
-            $this->line('   The routes should be placed inside the middleware group.');
-            $this->newLine();
-            $this->comment('   Note: If you have configured your own starterkit, you may need to add:');
-            $this->line('   use Livewire\Volt\Volt;');
-            $this->line('   at the top of your routes/web.php file.');
+            $this->line('   The routes should be placed inside Route::middleware([\'auth\'])->group(...).');
         }
     }
 
@@ -318,73 +305,10 @@ class InstallCommand extends Command
     }
 
     /**
-     * Update CreateNewUser action
+     * Copy EnsureUserIsActive.php only. Does not modify FortifyServiceProvider.
+     * See docs/FORTIFY-IS-ACTIVE.md for registering the action in the auth pipeline.
      */
-    private function updateCreateNewUser(): void
-    {
-        $createNewUserPath = app_path('Actions/Fortify/CreateNewUser.php');
-        $stubPath = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/app/Actions/Fortify/CreateNewUser.php');
-
-        // If developing locally, use local path
-        if (!File::exists($stubPath)) {
-            $stubPath = __DIR__ . '/../../stubs/app/Actions/Fortify/CreateNewUser.php';
-        }
-
-        if (!File::exists($createNewUserPath)) {
-            $this->warn('⚠️  CreateNewUser.php not found. Skipping update.');
-            return;
-        }
-
-        if (!File::exists($stubPath)) {
-            $this->warn('⚠️  CreateNewUser stub not found. Skipping update.');
-            return;
-        }
-
-        // Check if already updated
-        $content = File::get($createNewUserPath);
-        if (strpos($content, 'roles()->attach(1)') !== false) {
-            $this->info('✅ CreateNewUser already updated.');
-            return;
-        }
-
-        // Backup original file before replacing it (create .backup file in same directory)
-        $backupPath = $this->getCreateNewUserBackupPath();
-
-        try {
-            // Always create backup (overwrite if exists) to ensure we have the latest original
-            // We create a .backup file in the same directory as the original file
-            File::copy($createNewUserPath, $backupPath);
-            $this->line('  Original CreateNewUser.php backed up to CreateNewUser.backup.');
-            $this->line('  Note: The backup file will not be deleted. On uninstall, it will be restored.');
-        } catch (\Exception $e) {
-            $this->error('❌ Failed to create backup of CreateNewUser.php: ' . $e->getMessage());
-            $this->warn('⚠️  Continuing with update, but backup was not created.');
-            $this->warn('⚠️  Note: We will not delete the backup file. On uninstall, the .backup file will be restored.');
-        }
-
-        // Copy stub
-        try {
-            File::copy($stubPath, $createNewUserPath);
-            $this->info('✅ CreateNewUser updated successfully.');
-        } catch (\Exception $e) {
-            $this->error('❌ Failed to update CreateNewUser.php: ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    /**
-     * Get the backup path for CreateNewUser.php
-     * Creates a .backup file in the same directory as the original
-     */
-    private function getCreateNewUserBackupPath(): string
-    {
-        return app_path('Actions/Fortify/CreateNewUser.backup');
-    }
-
-    /**
-     * Copy EnsureUserIsActive.php and FortifyServiceProvider.php from package stubs to app (override).
-     */
-    private function updateFortifyEnsureUserIsActive(): void
+    private function copyEnsureUserIsActiveOnly(): void
     {
         $stubBase = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs');
         if (!File::exists($stubBase)) {
@@ -392,32 +316,20 @@ class InstallCommand extends Command
         }
 
         $ensureUserIsActiveStub = $stubBase . '/app/Actions/Fortify/EnsureUserIsActive.php';
-        $fortifyProviderStub = $stubBase . '/app/Providers/FortifyServiceProvider.php';
         $ensureUserIsActiveDest = app_path('Actions/Fortify/EnsureUserIsActive.php');
-        $fortifyProviderDest = app_path('Providers/FortifyServiceProvider.php');
 
         if (!File::exists($ensureUserIsActiveStub)) {
             $this->warn('⚠️  EnsureUserIsActive.php stub not found. Skipping.');
-        } else {
-            try {
-                File::ensureDirectoryExists(dirname($ensureUserIsActiveDest));
-                File::copy($ensureUserIsActiveStub, $ensureUserIsActiveDest);
-                $this->info('✅ EnsureUserIsActive.php copied successfully.');
-            } catch (\Exception $e) {
-                $this->error('❌ Failed to copy EnsureUserIsActive.php: ' . $e->getMessage());
-            }
+            return;
         }
 
-        if (!File::exists($fortifyProviderStub)) {
-            $this->warn('⚠️  FortifyServiceProvider.php stub not found. Skipping.');
-        } else {
-            try {
-                File::ensureDirectoryExists(dirname($fortifyProviderDest));
-                File::copy($fortifyProviderStub, $fortifyProviderDest);
-                $this->info('✅ FortifyServiceProvider.php overridden successfully.');
-            } catch (\Exception $e) {
-                $this->error('❌ Failed to override FortifyServiceProvider.php: ' . $e->getMessage());
-            }
+        try {
+            File::ensureDirectoryExists(dirname($ensureUserIsActiveDest));
+            File::copy($ensureUserIsActiveStub, $ensureUserIsActiveDest);
+            $this->info('✅ EnsureUserIsActive.php copied successfully.');
+            $this->comment('   Add it to your Fortify auth pipeline — see docs/FORTIFY-IS-ACTIVE.md');
+        } catch (\Exception $e) {
+            $this->error('❌ Failed to copy EnsureUserIsActive.php: ' . $e->getMessage());
         }
     }
 
@@ -448,20 +360,20 @@ class InstallCommand extends Command
     /**
      * Display completion message
      */
-    private function displayCompletionMessage()
+    private function displayCompletionMessage(): void
     {
         $this->newLine();
         $this->info('🎉 UI Livewire Flux Admin package installed successfully!');
         $this->newLine();
 
         $this->comment('📋 Next steps:');
-        $this->line('   1. Review your routes/web.php to ensure routes were added correctly');
-        $this->line('   2. If you have configured your own starterkit, add: use Livewire\Volt\Volt; at the top of routes/web.php');
-        $this->line('   3. Review your sidebar.blade.php to ensure menu items were added');
-        $this->line('   4. Test your admin routes');
+        $this->line('   1. Review routes/web.php to ensure admin routes were added');
+        $this->line('   2. Review sidebar.blade.php to ensure menu items were added');
+        $this->line('   3. To assign a role on registration: see docs/ROLE-ON-REGISTRATION.md');
+        $this->line('   4. If using Fortify + EnsureUserIsActive: see docs/FORTIFY-IS-ACTIVE.md');
         $this->newLine();
 
-        $this->comment('📖 For help and available commands, run: php artisan ui-livewireflux-admin:help');
+        $this->comment('📖 For help and available commands: php artisan ui-livewireflux-admin:help');
         $this->newLine();
 
         $this->info('✨ Happy coding with UI Livewire Flux Admin!');

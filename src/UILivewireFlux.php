@@ -202,7 +202,6 @@ class UILivewireFlux
     {
         $filesToRemove = [
             $this->appPath('View/Components/AdminPanel.php'),
-            $this->appPath('Actions/Fortify/CreateNewUser.php'),
             $this->appPath('Actions/Fortify/EnsureUserIsActive.php'),
             $this->resourcePath('views/components/admin-panel.blade.php'),
             $this->resourcePath('views/livewire/admin'),
