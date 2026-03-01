@@ -1,0 +1,39 @@
+---
+description: Vormia UI Livewire Flux Admin - package structure, sidebar, AdminPanel, and patterns
+globs: "**/*.blade.php,**/*.php"
+alwaysApply: false
+---
+
+# Vormia UI Livewire Flux Admin – AI Guide
+
+Structure, sidebar, AdminPanel, and conventions for this Laravel admin package.
+
+## Project Structure
+
+- Admin components: `resources/views/livewire/admin/{section}/`
+- Control sections (categories, inheritance, locations, availability): `livewire/admin/control/`
+- Admins section: `livewire/admin/admins/`
+- Use single-file Volt components (`.blade.php` only)
+
+## Sidebar
+
+- Primary: `resources/views/layouts/app/sidebar.blade.php`
+- Fallback: `resources/views/components/layouts/app/sidebar.blade.php`
+- Menu items go **inside** the Platform `flux:sidebar.group`, before `</flux:sidebar.group>`
+- Use `flux:sidebar.item` or `flux:navlist.item` (depending on sidebar structure)
+- Stub: `src/stubs/reference/sidebar-menu-to-add.blade.php`
+
+## AdminPanel Component
+
+- Blade: `resources/views/components/admin-panel.blade.php`
+- Class: `app/View/Components/AdminPanel.php`
+- Slots: `header`, `desc`, `button`, default `$slot`
+- Always wrap admin content in `<x-admin-panel>`
+- Use light mode only (no `dark:` classes)
+
+## Patterns
+
+- Use `WithNotifications`, `WithPagination`, `#[Validate]`, `#[Computed]`
+- Route names: `admin.{section}.index`, `.create`, `.edit`
+- Use `wire:submit="save"`, `wire:model`, `wire:click`
+- See `docs/ROLE-ON-REGISTRATION.md` for role assignment, `docs/FORTIFY-IS-ACTIVE.md` for EnsureUserIsActive

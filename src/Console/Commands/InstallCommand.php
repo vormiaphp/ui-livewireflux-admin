@@ -54,7 +54,7 @@ class InstallCommand extends Command
             $this->injectSidebarMenu();
         } else {
             $this->warn('⚠️  livewire/flux is not installed. Sidebar menu will not be automatically injected.');
-            $this->line('   You will need to manually add the navigation links to resources/views/components/layouts/app/sidebar.blade.php');
+            $this->line('   You will need to manually add the navigation links to resources/views/layouts/app/sidebar.blade.php (or components/layouts/app/sidebar.blade.php)');
         }
 
         // Step 4: Copy EnsureUserIsActive (if laravel/fortify exists)
@@ -191,11 +191,22 @@ class InstallCommand extends Command
     }
 
     /**
+     * Resolve sidebar blade path (primary: layouts/app, fallback: components/layouts/app).
+     */
+    private function getSidebarPath(): ?string
+    {
+        $primary = resource_path('views/layouts/app/sidebar.blade.php');
+        $fallback = resource_path('views/components/layouts/app/sidebar.blade.php');
+
+        return File::exists($primary) ? $primary : (File::exists($fallback) ? $fallback : null);
+    }
+
+    /**
      * Inject sidebar menu into sidebar.blade.php
      */
     private function injectSidebarMenu(): void
     {
-        $sidebarPath = resource_path('views/components/layouts/app/sidebar.blade.php');
+        $sidebarPath = $this->getSidebarPath();
         $sidebarToAdd = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php');
 
         // If developing locally, use local path
@@ -203,8 +214,8 @@ class InstallCommand extends Command
             $sidebarToAdd = __DIR__ . '/../../stubs/reference/sidebar-menu-to-add.blade.php';
         }
 
-        if (!File::exists($sidebarPath)) {
-            $this->warn('⚠️  Sidebar file not found at: ' . $sidebarPath);
+        if ($sidebarPath === null) {
+            $this->warn('⚠️  Sidebar file not found (checked layouts/app/sidebar.blade.php and components/layouts/app/sidebar.blade.php).');
             $this->line('   Please manually add the sidebar menu code.');
             return;
         }
@@ -252,37 +263,30 @@ class InstallCommand extends Command
             return;
         }
 
-        // Find Platform navlist.group - look for the closing tag
+        // Find Platform flux:sidebar.group - insert before closing tag
         $lines = explode("\n", $content);
         $insertionLine = -1;
 
-        // Pattern to find Platform group closing tag
-        // Look for </flux:navlist.group> after finding Platform heading
-        $inPlatformGroup = false;
         for ($i = 0; $i < count($lines); $i++) {
-            // Check if this line contains the Platform group opening tag
-            if (preg_match('/<flux:navlist\.group\s+.*?:heading=["\']__\(["\']Platform["\']\)["\'].*?class=["\']grid["\']>/i', $lines[$i])) {
-                $inPlatformGroup = true;
-                continue;
-            }
-
-            // If we're in the Platform group, look for the closing tag
-            if ($inPlatformGroup && preg_match('/<\/flux:navlist\.group>/i', $lines[$i])) {
-                $insertionLine = $i + 1;
-                break;
+            // Match Platform flux:sidebar.group opening tag
+            if (preg_match('/<flux:sidebar\.group\s+.*?:heading=["\']__\(["\']Platform["\']\)["\'].*?>/i', $lines[$i])) {
+                // Find the closing </flux:sidebar.group> and insert before it
+                for ($j = $i + 1; $j < min($i + 50, count($lines)); $j++) {
+                    if (preg_match('/<\/flux:sidebar\.group>/i', $lines[$j])) {
+                        $insertionLine = $j;
+                        break 2;
+                    }
+                }
             }
         }
 
-        // Fallback: if Platform group not found, try to find it with more flexible patterns
+        // Fallback: more flexible pattern for Platform heading
         if ($insertionLine === -1) {
-            // Try to find Platform heading with more flexible whitespace
             for ($i = 0; $i < count($lines); $i++) {
-                // Match Platform heading with various whitespace patterns
-                if (preg_match('/<flux:navlist\.group.*?heading.*?Platform.*?>/i', $lines[$i])) {
-                    // Find the closing tag within reasonable distance (next 20 lines)
-                    for ($j = $i + 1; $j < min($i + 20, count($lines)); $j++) {
-                        if (preg_match('/<\/flux:navlist\.group>/i', $lines[$j])) {
-                            $insertionLine = $j + 1;
+                if (preg_match('/<flux:sidebar\.group.*?heading.*?Platform.*?>/i', $lines[$i])) {
+                    for ($j = $i + 1; $j < min($i + 50, count($lines)); $j++) {
+                        if (preg_match('/<\/flux:sidebar\.group>/i', $lines[$j])) {
+                            $insertionLine = $j;
                             break 2;
                         }
                     }
@@ -290,17 +294,16 @@ class InstallCommand extends Command
             }
         }
 
-        if ($insertionLine !== -1 && $insertionLine <= count($lines)) {
-            // Insert the sidebar content
+        if ($insertionLine !== -1) {
             $sidebarLines = explode("\n", $sidebarContent);
             array_splice($lines, $insertionLine, 0, $sidebarLines);
             $content = implode("\n", $lines);
             File::put($sidebarPath, $content);
             $this->info('✅ Sidebar menu injected successfully.');
         } else {
-            $this->warn('⚠️  Could not find Platform navlist.group in sidebar file.');
-            $this->line('   Please manually add the sidebar menu code after the Platform group closing tag.');
-            $this->line('   The menu code should be placed in: ' . $sidebarPath);
+            $this->warn('⚠️  Could not find Platform flux:sidebar.group in sidebar file.');
+            $this->line('   Please manually add the menu code inside the Platform group in layouts/app/sidebar.blade.php or components/layouts/app/sidebar.blade.php.');
+            $this->line('   See vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php for the content.');
         }
     }
 

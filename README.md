@@ -13,7 +13,7 @@ A Laravel package that provides a complete admin panel solution with pre-built c
 - **Pre-configured Admin Routes** - Complete CRUD routes for all admin sections
 - **Livewire Volt Components** - Single-file components for categories, inheritance, locations, availability, and admin management
 - **Automatic Sidebar Integration** - Sidebar menu injection (when livewire/flux is installed)
-- **Role Management** - Automatic role attachment for new users (when laravel/fortify is installed)
+- **Role Management** - See `docs/ROLE-ON-REGISTRATION.md` for assigning roles on registration
 
 This package is designed to work seamlessly with the Vormia ecosystem and follows Laravel best practices.
 
@@ -63,17 +63,14 @@ composer require livewire/flux
 
 ### laravel/fortify
 
-**Purpose:** Enables automatic role attachment for newly registered users.
+**Purpose:** Enables the `EnsureUserIsActive` action (blocks inactive users from logging in).
 
 **If installed:**
 
-- The `CreateNewUser` action is automatically updated
-- New users are automatically assigned the admin role (ID: 1)
+- The package copies `EnsureUserIsActive.php` to your app
+- You must register it in your Fortify auth pipeline (see `docs/FORTIFY-IS-ACTIVE.md`)
 
-**If NOT installed:**
-
-- You'll need to manually attach roles to new users
-- The installation process will warn you and provide instructions
+**Role assignment:** This package does not modify `CreateNewUser`. To assign roles on registration, see `docs/ROLE-ON-REGISTRATION.md`.
 
 **Installation:**
 
@@ -101,7 +98,7 @@ This command will:
 2. ✅ Copy all package files to your application
 3. ✅ Inject routes into `routes/web.php`
 4. ✅ Inject sidebar menu (if livewire/flux is installed)
-5. ✅ Update `CreateNewUser` action (if laravel/fortify is installed)
+5. ✅ Copy `EnsureUserIsActive.php` (if laravel/fortify is installed) — see `docs/FORTIFY-IS-ACTIVE.md` to register it
 6. ✅ Clear application caches
 
 ### Step 3: Verify Installation
@@ -148,20 +145,20 @@ Route::middleware(['auth'])->group(function () {
 
 If `livewire/flux` is not installed or the sidebar menu wasn't injected:
 
-1. Open `resources/views/components/layouts/app/sidebar.blade.php`
-2. Find the Platform `navlist.group` (the group containing the Dashboard menu item)
-3. Add the code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php` after the closing `</flux:navlist.group>` tag of the Platform group
+1. Open your sidebar file. The package checks (in order): `resources/views/layouts/app/sidebar.blade.php`, then `resources/views/components/layouts/app/sidebar.blade.php`
+2. Find the Platform `flux:sidebar.group` (the group containing the Dashboard menu item)
+3. Add the code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php` **inside** the Platform group, before the closing `</flux:sidebar.group>` tag
 
 **Example:**
 
-```php
-<flux:navlist.group :heading="__('Platform')" class="grid">
-    <flux:navlist.item icon="home" :href="route('dashboard')" wire:navigate>
+```blade
+<flux:sidebar.group :heading="__('Platform')" class="grid">
+    <flux:sidebar.item icon="home" :href="route('dashboard')" wire:navigate>
         {{ __('Dashboard') }}
-    </flux:navlist.item>
-</flux:navlist.group>
+    </flux:sidebar.item>
 
-<!-- Add admin menu items here -->
+    <!-- Add admin menu items here, before the closing tag -->
+</flux:sidebar.group>
 ```
 
 ### Role Attachment Not Working
@@ -190,7 +187,7 @@ A reusable Blade component for consistent admin panel layouts:
 </x-admin-panel>
 ```
 
-**Location:** `app/View/Components/AdminPanel.php` and `resources/views/components/admin-panel.php`
+**Location:** `app/View/Components/AdminPanel.php` and `resources/views/components/admin-panel.blade.php`
 
 ### 2. Admin Routes
 
@@ -233,7 +230,7 @@ When `livewire/flux` is installed, the sidebar automatically includes:
 
 ### 5. Role Management
 
-When `laravel/fortify` is installed, new users are automatically assigned the admin role (ID: 1) upon registration.
+To assign roles to new users on registration, see `docs/ROLE-ON-REGISTRATION.md`.
 
 ## What to Be Aware Of
 
@@ -252,15 +249,13 @@ When `laravel/fortify` is installed, new users are automatically assigned the ad
 
 3. **Role IDs**
 
-   - The package assumes role ID `1` is the admin role
-   - If your application uses different role IDs, you'll need to update:
-     - `app/Actions/Fortify/CreateNewUser.php` (if using Fortify)
-     - Any custom role attachment logic
+   - See `docs/ROLE-ON-REGISTRATION.md` for how to assign roles on registration
 
 4. **Sidebar File Location**
 
-   - The package expects the sidebar at: `resources/views/components/layouts/app/sidebar.blade.php`
-   - If your sidebar is in a different location, you'll need to manually add the menu items
+   - The package checks (in order): `resources/views/layouts/app/sidebar.blade.php`, then `resources/views/components/layouts/app/sidebar.blade.php`
+   - Menu items are inserted inside the Platform `flux:sidebar.group`, before the closing `</flux:sidebar.group>` tag
+   - If your sidebar is elsewhere, add the menu manually
 
 5. **Route Injection**
 
@@ -344,8 +339,8 @@ php artisan ui-livewireflux-admin:uninstall
 **What gets removed:**
 
 - `app/View/Components/AdminPanel.php`
-- `app/Actions/Fortify/CreateNewUser.php` (if it was updated)
-- `resources/views/components/admin-panel.php`
+- `app/Actions/Fortify/EnsureUserIsActive.php` (if copied)
+- `resources/views/components/admin-panel.blade.php`
 - `resources/views/livewire/admin/` directory
 - Routes from `routes/web.php`
 - Sidebar menu items from `sidebar.blade.php`
@@ -396,11 +391,11 @@ UILivewireFlux-Admin/
 │   │   │   │       └── AdminPanel.php
 │   │   │   └── Actions/
 │   │   │       └── Fortify/
-│   │   │           └── CreateNewUser.php
+│   │   │           └── EnsureUserIsActive.php
 │   │   └── resources/
 │   │       └── views/
 │   │           ├── components/
-│   │           │   └── admin-panel.php
+│   │           │   └── admin-panel.blade.php
 │   │           └── livewire/
 │   │               └── admin/
 │   │                   ├── admins/
@@ -482,20 +477,17 @@ route('admin.categories.edit', ['id' => 1])
 **Solution:**
 
 1. Check if `livewire/flux` is installed: `composer show livewire/flux`
-2. Verify the sidebar file exists at: `resources/views/components/layouts/app/sidebar.blade.php`
-3. Manually add the menu code from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php` if needed
+2. Verify the sidebar file exists at `resources/views/layouts/app/sidebar.blade.php` or `resources/views/components/layouts/app/sidebar.blade.php`
+3. Add the menu code inside the Platform `flux:sidebar.group` (before `</flux:sidebar.group>`) from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php`
 4. Clear view cache: `php artisan view:clear`
 
 ### Role Attachment Not Working
 
-**Problem:** New users are not getting the admin role.
+**Problem:** New users are not getting the expected role.
 
 **Solution:**
 
-1. Check if `laravel/fortify` is installed
-2. Verify `app/Actions/Fortify/CreateNewUser.php` exists and was updated
-3. Check that the role ID `1` exists in your database
-4. Manually add role attachment if needed
+See `docs/ROLE-ON-REGISTRATION.md` for how to update `CreateNewUser` to attach roles on registration.
 
 ## License
 

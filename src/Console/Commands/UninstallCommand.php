@@ -95,6 +95,17 @@ class UninstallCommand extends Command
     }
 
     /**
+     * Resolve sidebar blade path (primary: layouts/app, fallback: components/layouts/app).
+     */
+    private function getSidebarPath(): ?string
+    {
+        $primary = resource_path('views/layouts/app/sidebar.blade.php');
+        $fallback = resource_path('views/components/layouts/app/sidebar.blade.php');
+
+        return File::exists($primary) ? $primary : (File::exists($fallback) ? $fallback : null);
+    }
+
+    /**
      * Create final backup before uninstallation
      */
     private function createFinalBackup()
@@ -111,8 +122,12 @@ class UninstallCommand extends Command
             resource_path('views/components/admin-panel.blade.php') => $backupDir . '/views/components/admin-panel.blade.php',
             resource_path('views/livewire/admin') => $backupDir . '/views/livewire/admin',
             base_path('routes/web.php') => $backupDir . '/routes/web.php',
-            resource_path('views/components/layouts/app/sidebar.blade.php') => $backupDir . '/views/components/layouts/app/sidebar.blade.php',
         ];
+
+        $sidebarPath = $this->getSidebarPath();
+        if ($sidebarPath !== null) {
+            $filesToBackup[$sidebarPath] = $backupDir . '/views/sidebar.blade.php';
+        }
 
         foreach ($filesToBackup as $source => $destination) {
             if (File::exists($source)) {
@@ -242,7 +257,7 @@ class UninstallCommand extends Command
      */
     private function removeSidebarMenu(): void
     {
-        $sidebarPath = resource_path('views/components/layouts/app/sidebar.blade.php');
+        $sidebarPath = $this->getSidebarPath();
         $sidebarStubPath = base_path('vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/sidebar-menu-to-add.blade.php');
 
         // If developing locally, use local path
@@ -250,7 +265,7 @@ class UninstallCommand extends Command
             $sidebarStubPath = __DIR__ . '/../../stubs/reference/sidebar-menu-to-add.blade.php';
         }
 
-        if (!File::exists($sidebarPath)) {
+        if ($sidebarPath === null) {
             $this->warn('⚠️  Sidebar file not found.');
             return;
         }
