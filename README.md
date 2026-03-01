@@ -489,6 +489,12 @@ route('admin.categories.edit', ['id' => 1])
 
 See `docs/ROLE-ON-REGISTRATION.md` for how to update `CreateNewUser` to attach roles on registration.
 
+## Changelog
+
+### v3.0.0 (2025-03-01)
+
+- Major release with improvements and updates
+
 ## License
 
 MIT
