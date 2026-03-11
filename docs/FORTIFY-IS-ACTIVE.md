@@ -47,7 +47,7 @@ Place `EnsureUserIsActive::class` between `AttemptToAuthenticate` and `PrepareAu
 
 ## User Model
 
-Your `User` model must have an `is_active` attribute (boolean). The Vormia package typically adds this via migration. Ensure the column exists and is cast appropriately:
+Your `User` model must have an `is_active` attribute (boolean). Use the `Vormia\Vormia\Traits\HasVormiaRoles` trait from the Vormia package; the `is_active` column is added by the Vormia package migration. Ensure the column exists and is cast appropriately:
 
 ```php
 protected function casts(): array

@@ -4,14 +4,17 @@ This package does not modify your authentication flow. To assign a role to new u
 
 ## Prerequisites
 
-- Your `App\Models\User` model must use the Vormia package's roles relationship (e.g. `HasRoles` trait or equivalent from `vormiaphp/vormia`).
+- Your `App\Models\User` model must use the `Vormia\Vormia\Traits\HasVormiaRoles` trait from the `vormiaphp/vormia` package.
 - Vormia migrations must be run so the `role_user` pivot table exists.
 
 ## Implementation
 
-In `app/Actions/Fortify/CreateNewUser.php`, after creating the user, attach the desired role:
+In `app/Actions/Fortify/CreateNewUser.php`, after creating the user, attach the desired role. Reference the Role model from the Vormia package:
 
 ```php
+use App\Models\User;
+use Vormia\Vormia\Models\Role;
+
 public function create(array $input): User
 {
     // ... validation ...
@@ -22,8 +25,10 @@ public function create(array $input): User
         'password' => $input['password'],
     ]);
 
-    // Assign default role (e.g. role ID 1 for Super Admin, or use config)
-    $user->roles()->attach(1);
+    $defaultRole = Role::where('name', 'user')->first();
+    if ($defaultRole) {
+        $user->roles()->attach($defaultRole);
+    }
 
     return $user;
 }
@@ -31,19 +36,47 @@ public function create(array $input): User
 
 ## Using Configuration
 
-You can store the default role ID in `config/vormia.php` or `.env` to avoid hardcoding:
+You can store the default role ID in `config/vormia.php` or `.env` to avoid hardcoding. Use the package's Role model to resolve the role:
 
 ```php
-$defaultRoleId = config('vormia.default_role_id', 1);
-$user->roles()->attach($defaultRoleId);
+use Vormia\Vormia\Models\Role;
+
+$defaultRole = Role::find(config('vormia.default_role_id', 1));
+if ($defaultRole) {
+    $user->roles()->attach($defaultRole);
+}
 ```
 
 ## Admin Users
 
-If you want the first registered user (or users from a specific list) to receive an admin role, you can add conditional logic:
+If you want the first registered user (or users from a specific list) to receive an admin role, you can add conditional logic. Prefer looking up roles by name via `Vormia\Vormia\Models\Role`:
 
 ```php
+use Vormia\Vormia\Models\Role;
+
 // Example: first user gets admin role
+$adminRole = Role::where('name', 'admin')->first();
+$userRole = Role::where('name', 'user')->first();
+$roleToAttach = User::count() === 1 ? $adminRole : ($userRole ?? Role::find(config('vormia.default_role_id', 2)));
+if ($roleToAttach) {
+    $user->roles()->attach($roleToAttach);
+}
+```
+
+Alternatively, you can still use role IDs (roles are from `Vormia\Vormia\Models\Role`):
+
+```php
 $roleId = User::count() === 1 ? 1 : config('vormia.default_role_id', 2);
 $user->roles()->attach($roleId);
+```
+
+## Package models reference
+
+When using Vormia models in your app, reference them from the package namespace:
+
+```php
+use Vormia\Vormia\Models\Role;
+use Vormia\Vormia\Models\Permission;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Models\UserMeta;
 ```

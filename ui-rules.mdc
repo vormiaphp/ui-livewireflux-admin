@@ -33,7 +33,7 @@ Structure, sidebar, AdminPanel, and conventions for this Laravel admin package.
 
 ## Patterns
 
-- Use `WithNotifications`, `WithPagination`, `#[Validate]`, `#[Computed]`
+- Use `Vormia\Vormia\Traits\Livewire\WithNotifications` for notifications, plus `WithPagination`, `#[Validate]`, `#[Computed]`
 - Route names: `admin.{section}.index`, `.create`, `.edit`
 - Use `wire:submit="save"`, `wire:model`, `wire:click`
 - See `docs/ROLE-ON-REGISTRATION.md` for role assignment, `docs/FORTIFY-IS-ACTIVE.md` for EnsureUserIsActive

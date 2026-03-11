@@ -163,12 +163,17 @@ If `livewire/flux` is not installed or the sidebar menu wasn't injected:
 
 ### Role Attachment Not Working
 
-If `laravel/fortify` is not installed, manually attach roles to new users:
+If `laravel/fortify` is not installed, manually attach roles to new users. Use the Role model from the Vormia package (`Vormia\Vormia\Models\Role`) and look up by name:
 
 ```php
+use Vormia\Vormia\Models\Role;
+
 // In your user registration logic
 $user = User::create([...]);
-$user->roles()->attach(1); // 1 for admin
+$defaultRole = Role::where('name', 'user')->first();
+if ($defaultRole) {
+    $user->roles()->attach($defaultRole);
+}
 ```
 
 ## What You Get
@@ -230,7 +235,7 @@ When `livewire/flux` is installed, the sidebar automatically includes:
 
 ### 5. Role Management
 
-To assign roles to new users on registration, see `docs/ROLE-ON-REGISTRATION.md`.
+Role models live in the Vormia package (`Vormia\Vormia\Models\Role`). To assign roles to new users on registration, see `docs/ROLE-ON-REGISTRATION.md`.
 
 ## What to Be Aware Of
 
@@ -247,9 +252,9 @@ To assign roles to new users on registration, see `docs/ROLE-ON-REGISTRATION.md`
    - All admin routes require `auth` middleware
    - Ensure your application has this middleware configured
 
-3. **Role IDs**
+3. **Role models**
 
-   - See `docs/ROLE-ON-REGISTRATION.md` for how to assign roles on registration
+   - Roles are referenced from the Vormia package: `Vormia\Vormia\Models\Role`. See `docs/ROLE-ON-REGISTRATION.md` for how to assign roles on registration.
 
 4. **Sidebar File Location**
 
@@ -487,7 +492,7 @@ route('admin.categories.edit', ['id' => 1])
 
 **Solution:**
 
-See `docs/ROLE-ON-REGISTRATION.md` for how to update `CreateNewUser` to attach roles on registration.
+Use `Vormia\Vormia\Models\Role` from the Vormia package and attach by role model (e.g. look up by name). See `docs/ROLE-ON-REGISTRATION.md` for how to update `CreateNewUser` to attach roles on registration.
 
 ## Changelog
 
