@@ -149,9 +149,9 @@ class HelpCommand extends Command
             'AdminPanel Component' => 'Reusable view component for admin panels',
             'Admin Routes' => 'Pre-configured routes for categories, inheritance, locations, availability, and admins',
             'Volt Components' => 'Livewire Volt components for all admin sections',
-            'Sidebar Integration' => 'Automatic sidebar menu injection (requires livewire/flux)',
+            'Sidebar Integration' => 'Automatic sidebar menu injection (livewire/flux required)',
             'Role on Registration' => 'See docs/ROLE-ON-REGISTRATION.md for assigning role on user registration',
-            'EnsureUserIsActive' => 'See docs/FORTIFY-IS-ACTIVE.md when using laravel/fortify',
+            'EnsureUserIsActive' => 'See docs/FORTIFY-IS-ACTIVE.md (laravel/fortify required)',
         ];
 
         foreach ($features as $feature => $description) {
@@ -171,12 +171,8 @@ class HelpCommand extends Command
 
         $this->line('  <fg=white>Required:</>');
         $this->line('    • vormiaphp/vormia');
-        $this->line('    • livewire/volt');
-        $this->newLine();
-
-        $this->line('  <fg=white>Optional:</>');
-        $this->line('    • livewire/flux (for automatic sidebar menu)');
-        $this->line('    • laravel/fortify (for EnsureUserIsActive - see docs/FORTIFY-IS-ACTIVE.md)');
+        $this->line('    • livewire/flux');
+        $this->line('    • laravel/fortify');
         $this->newLine();
     }
 
@@ -189,7 +185,7 @@ class HelpCommand extends Command
         $this->newLine();
 
         $this->line('  <fg=white>Issue:</> Installation fails');
-        $this->line('  <fg=gray>Solution:</> Ensure vormiaphp/vormia and livewire/volt are installed');
+        $this->line('  <fg=gray>Solution:</> Ensure vormiaphp/vormia, livewire/flux, and laravel/fortify are installed');
         $this->newLine();
 
         $this->line('  <fg=white>Issue:</> Routes not working');
@@ -197,7 +193,7 @@ class HelpCommand extends Command
         $this->newLine();
 
         $this->line('  <fg=white>Issue:</> Sidebar menu not appearing');
-        $this->line('  <fg=gray>Solution:</> Install livewire/flux or manually add menu code');
+        $this->line('  <fg=gray>Solution:</> Ensure livewire/flux is installed and sidebar file exists');
         $this->newLine();
     }
 

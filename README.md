@@ -12,71 +12,20 @@ A Laravel package that provides a complete admin panel solution with pre-built c
 - **AdminPanel View Component** - A reusable Blade component for consistent admin panel layouts
 - **Pre-configured Admin Routes** - Complete CRUD routes for all admin sections
 - **Livewire Volt Components** - Single-file components for categories, inheritance, locations, availability, and admin management
-- **Automatic Sidebar Integration** - Sidebar menu injection (when livewire/flux is installed)
+- **Automatic Sidebar Integration** - Sidebar menu injection (requires livewire/flux)
 - **Role Management** - See `docs/ROLE-ON-REGISTRATION.md` for assigning roles on registration
 
 This package is designed to work seamlessly with the Vormia ecosystem and follows Laravel best practices.
 
 ## Prerequisites
 
-Before installing this package, ensure you have the following **required** packages installed:
+This package runs on **Vormia v5**. Required dependencies (installed automatically when you require this package):
 
-### Required Packages
+- **vormiaphp/vormia** ^5.0 (no less)
+- **livewire/flux** ^1.0
+- **laravel/fortify** ^2.0
 
-- **PHP** >= 8.2
-- **Laravel Framework** >= 12.0
-- **vormiaphp/vormia** >= 2.0 (or ^3.0 or ^4.0)
-- **Livewire Volt** (Volt is required when using Livewire 3 via `livewire/volt`. On Livewire 4, Volt ships with Livewire, so you do not need a separate `composer require livewire/volt`.)
-
-Install the required packages:
-
-> **Note:** If `vormiaphp/vormia` is already installed, skip this process. This applies only for standalone installation.
-
-```bash
-composer require vormiaphp/vormia
-composer require livewire/volt
-```
-
-## Optional Packages
-
-The following packages are optional but provide enhanced functionality:
-
-### livewire/flux
-
-**Purpose:** Provides automatic sidebar menu injection with Flux navigation components.
-
-**If installed:**
-
-- Sidebar menu items are automatically added to your sidebar view
-- Navigation links use Flux components for consistent styling
-
-**If NOT installed:**
-
-- You'll need to manually add navigation links to your sidebar
-- The installation process will warn you and provide instructions
-
-**Installation:**
-
-```bash
-composer require livewire/flux
-```
-
-### laravel/fortify
-
-**Purpose:** Enables the `EnsureUserIsActive` action (blocks inactive users from logging in).
-
-**If installed:**
-
-- The package copies `EnsureUserIsActive.php` to your app
-- You must register it in your Fortify auth pipeline (see `docs/FORTIFY-IS-ACTIVE.md`)
-
-**Role assignment:** This package does not modify `CreateNewUser`. To assign roles on registration, see `docs/ROLE-ON-REGISTRATION.md`.
-
-**Installation:**
-
-```bash
-composer require laravel/fortify
-```
+**Volt is not required** — with Vormia v5 / Livewire 4, Volt is bundled with Livewire.
 
 ## Installation Process
 
@@ -97,8 +46,8 @@ This command will:
 1. ✅ Check for required dependencies
 2. ✅ Copy all package files to your application
 3. ✅ Inject routes into `routes/web.php`
-4. ✅ Inject sidebar menu (if livewire/flux is installed)
-5. ✅ Copy `EnsureUserIsActive.php` (if laravel/fortify is installed) — see `docs/FORTIFY-IS-ACTIVE.md` to register it
+4. ✅ Inject sidebar menu
+5. ✅ Copy `EnsureUserIsActive.php` — see `docs/FORTIFY-IS-ACTIVE.md` to register it in Fortify
 6. ✅ Clear application caches
 
 ### Step 3: Verify Installation
@@ -107,7 +56,7 @@ After installation, verify that:
 
 - Files were copied to `app/View/Components/AdminPanel.php`
 - Routes were added to `routes/web.php`
-- Sidebar menu was added (if livewire/flux is installed)
+- Sidebar menu was added
 - Caches were cleared
 
 ## Manual Configuration (If Needed)
@@ -143,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
 
 ### Sidebar Menu Not Injected
 
-If `livewire/flux` is not installed or the sidebar menu wasn't injected:
+If the sidebar menu wasn't injected:
 
 1. Open your sidebar file. The package checks (in order): `resources/views/layouts/app/sidebar.blade.php`, then `resources/views/components/layouts/app/sidebar.blade.php`
 2. Find the Platform `flux:sidebar.group` (the group containing the Dashboard menu item)
@@ -163,7 +112,7 @@ If `livewire/flux` is not installed or the sidebar menu wasn't injected:
 
 ### Role Attachment Not Working
 
-If `laravel/fortify` is not installed, manually attach roles to new users. Use the Role model from the Vormia package (`Vormia\Vormia\Models\Role`) and look up by name:
+To attach roles to new users (e.g. in registration), use the Role model from the Vormia package (`Vormia\Vormia\Models\Role`) and look up by name:
 
 ```php
 use Vormia\Vormia\Models\Role;
@@ -225,7 +174,7 @@ Each section includes:
 
 ### 4. Sidebar Menu Integration
 
-When `livewire/flux` is installed, the sidebar automatically includes:
+The sidebar automatically includes:
 
 - Countries navigation link
 - Cities navigation link
@@ -242,41 +191,34 @@ Role models live in the Vormia package (`Vormia\Vormia\Models\Role`). To assign 
 ### ⚠️ Important Considerations
 
 1. **File Overwrites**
-
    - The installation process will copy files to your application
    - If files already exist, you'll be prompted to overwrite them
    - Always backup your files before updating
 
 2. **Middleware Requirements**
-
    - All admin routes require `auth` middleware
    - Ensure your application has this middleware configured
 
 3. **Role models**
-
    - Roles are referenced from the Vormia package: `Vormia\Vormia\Models\Role`. See `docs/ROLE-ON-REGISTRATION.md` for how to assign roles on registration.
 
 4. **Sidebar File Location**
-
    - The package checks (in order): `resources/views/layouts/app/sidebar.blade.php`, then `resources/views/components/layouts/app/sidebar.blade.php`
    - Menu items are inserted inside the Platform `flux:sidebar.group`, before the closing `</flux:sidebar.group>` tag
    - If your sidebar is elsewhere, add the menu manually
 
 5. **Route Injection**
-
    - Routes are injected into `routes/web.php`
    - The package looks for: `Route::middleware(['auth'])->group(function () { ... });`
    - If this pattern doesn't exist, routes won't be injected automatically
 
 6. **Custom Modifications**
-
    - Any custom modifications to package files will be lost when updating
    - Consider extending components instead of modifying them directly
    - Backups are created during updates (stored in `storage/app/ui-livewireflux-admin-backups/`)
 
 7. **Dependencies**
-   - The package requires `vormiaphp/vormia` - installation will fail without it
-   - `livewire/flux` and `laravel/fortify` are optional but recommended
+   - The package requires `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify`. Volt is not required (this package targets Vormia v5 / Livewire 4).
 
 ## Help, Update, and Uninstallation
 
@@ -307,9 +249,8 @@ php artisan ui-livewireflux-admin:check-dependencies
 This command checks for:
 
 - ✅ vormiaphp/vormia (required)
-- ✅ livewire/volt (required when using Livewire 3; on Livewire 4, Volt is bundled with Livewire)
-- ⚠️ livewire/flux (optional)
-- ⚠️ laravel/fortify (optional)
+- ✅ livewire/flux (required)
+- ✅ laravel/fortify (required)
 
 ### Updating the Package
 
@@ -459,7 +400,7 @@ route('admin.categories.edit', ['id' => 1])
 
 **Solution:**
 
-1. Ensure `vormiaphp/vormia` is installed. If you are on Livewire 3, also ensure `livewire/volt` is installed. On Livewire 4, Volt ships with Livewire, so you do not need a separate `livewire/volt` package.
+1. Ensure `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify` are installed. Volt is not required (this package runs on Vormia v5).
 2. Run `php artisan ui-livewireflux-admin:check-dependencies` to verify
 3. Check that your PHP version is >= 8.2
 4. Check that your Laravel version is >= 12.0

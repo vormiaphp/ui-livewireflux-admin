@@ -15,11 +15,8 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-        "vormiaphp/vormia": "^2.0 || ^3.0 || ^4.0",
+        "vormiaphp/vormia": "^2.0 || ^3.0 || ^4.0 || ^5.0",
         "livewire/livewire": "^3.0 || ^4.0",
-        "livewire/volt": "^1.0"
-    },
-    "suggest": {
         "livewire/flux": "^1.0",
         "laravel/fortify": "^2.0"
     },

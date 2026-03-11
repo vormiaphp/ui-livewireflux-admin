@@ -31,10 +31,6 @@ class CheckDependenciesCommand extends Command
 
         $required = [
             'vormiaphp/vormia',
-            'livewire/volt',
-        ];
-
-        $optional = [
             'livewire/flux',
             'laravel/fortify',
         ];
@@ -55,19 +51,6 @@ class CheckDependenciesCommand extends Command
 
         $this->newLine();
 
-        // Check optional packages
-        $this->info('Optional packages:');
-        foreach ($optional as $package) {
-            if (InstalledVersions::isInstalled($package)) {
-                $this->line("  ✓ {$package}");
-            } else {
-                $this->warn("  ⚠ {$package} - NOT INSTALLED");
-                $this->displayOptionalPackageInfo($package);
-            }
-        }
-
-        $this->newLine();
-
         if ($allGood) {
             $this->info('✅ All required packages are installed!');
             $this->info('UI Livewire Flux Admin is ready to use.');
@@ -76,27 +59,6 @@ class CheckDependenciesCommand extends Command
             $this->error('❌ Some required packages are missing.');
             $this->error('Please install them before using this package.');
             return Command::FAILURE;
-        }
-    }
-
-    /**
-     * Display information about optional packages.
-     */
-    protected function displayOptionalPackageInfo(string $package): void
-    {
-        switch ($package) {
-            case 'livewire/flux':
-                $this->line('    → Sidebar navigation links will not be automatically injected.');
-                $this->line('    → You will need to manually add navigation links to:');
-                $this->line('      resources/views/layouts/app/sidebar.blade.php (or components/layouts/app/sidebar.blade.php)');
-                $this->line('    → See README.md for the code to add.');
-                break;
-
-            case 'laravel/fortify':
-                $this->line('    → You will need to manually attach the admin role (ID: 1) to new users.');
-                $this->line('    → Update app/Actions/Fortify/CreateNewUser.php to attach role.');
-                $this->line('    → See README.md for instructions.');
-                break;
         }
     }
 }

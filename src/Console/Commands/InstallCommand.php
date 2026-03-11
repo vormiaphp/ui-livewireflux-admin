@@ -48,22 +48,13 @@ class InstallCommand extends Command
         $this->step('Injecting routes into routes/web.php...');
         $this->injectRoutes();
 
-        // Step 3: Inject sidebar menu (if livewire/flux exists)
-        if (InstalledVersions::isInstalled('livewire/flux')) {
-            $this->step('Injecting sidebar menu...');
-            $this->injectSidebarMenu();
-        } else {
-            $this->warn('⚠️  livewire/flux is not installed. Sidebar menu will not be automatically injected.');
-            $this->line('   You will need to manually add the navigation links to resources/views/layouts/app/sidebar.blade.php (or components/layouts/app/sidebar.blade.php)');
-        }
+        // Step 3: Inject sidebar menu (livewire/flux is required)
+        $this->step('Injecting sidebar menu...');
+        $this->injectSidebarMenu();
 
-        // Step 4: Copy EnsureUserIsActive (if laravel/fortify exists)
-        if (InstalledVersions::isInstalled('laravel/fortify')) {
-            $this->step('Copying EnsureUserIsActive action...');
-            $this->copyEnsureUserIsActiveOnly();
-        } else {
-            $this->warn('⚠️  laravel/fortify is not installed. EnsureUserIsActive will not be copied.');
-        }
+        // Step 4: Copy EnsureUserIsActive (laravel/fortify is required)
+        $this->step('Copying EnsureUserIsActive action...');
+        $this->copyEnsureUserIsActiveOnly();
 
         // Step 5: Clear caches
         $this->step('Clearing application caches...');
@@ -83,7 +74,8 @@ class InstallCommand extends Command
 
         $required = [
             'vormiaphp/vormia',
-            'livewire/volt',
+            'livewire/flux',
+            'laravel/fortify',
         ];
 
         $allGood = true;
