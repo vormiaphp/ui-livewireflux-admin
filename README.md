@@ -26,7 +26,7 @@ Before installing this package, ensure you have the following **required** packa
 - **PHP** >= 8.2
 - **Laravel Framework** >= 12.0
 - **vormiaphp/vormia** >= 2.0 (or ^3.0 or ^4.0)
-- **livewire/volt** >= 1.0
+- **Livewire Volt** (Volt is required when using Livewire 3 via `livewire/volt`. On Livewire 4, Volt ships with Livewire, so you do not need a separate `composer require livewire/volt`.)
 
 Install the required packages:
 
@@ -307,7 +307,7 @@ php artisan ui-livewireflux-admin:check-dependencies
 This command checks for:
 
 - ✅ vormiaphp/vormia (required)
-- ✅ livewire/volt (required)
+- ✅ livewire/volt (required when using Livewire 3; on Livewire 4, Volt is bundled with Livewire)
 - ⚠️ livewire/flux (optional)
 - ⚠️ laravel/fortify (optional)
 
@@ -459,7 +459,7 @@ route('admin.categories.edit', ['id' => 1])
 
 **Solution:**
 
-1. Ensure `vormiaphp/vormia` and `livewire/volt` are installed
+1. Ensure `vormiaphp/vormia` is installed. If you are on Livewire 3, also ensure `livewire/volt` is installed. On Livewire 4, Volt ships with Livewire, so you do not need a separate `livewire/volt` package.
 2. Run `php artisan ui-livewireflux-admin:check-dependencies` to verify
 3. Check that your PHP version is >= 8.2
 4. Check that your Laravel version is >= 12.0
