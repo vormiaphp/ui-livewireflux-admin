@@ -47,16 +47,6 @@ class UninstallCommand extends Command
             return;
         }
 
-        // Final confirmation
-        if (!$force) {
-            $this->newLine();
-            $this->error('🚨 FINAL WARNING: This action cannot be undone!');
-            if (!$this->confirm('Type "yes" to proceed with uninstallation', false)) {
-                $this->info('❌ Uninstall cancelled.');
-                return;
-            }
-        }
-
         // Step 1: Create final backup
         $this->step('Creating final backup...');
         $this->createFinalBackup();
