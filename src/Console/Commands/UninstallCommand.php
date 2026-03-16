@@ -47,11 +47,7 @@ class UninstallCommand extends Command
             return;
         }
 
-        // Step 1: Create final backup
-        $this->step('Creating final backup...');
-        $this->createFinalBackup();
-
-        // Step 2: Remove files
+        // Step 1: Remove files
         $this->step('Removing package files...');
         $vormia = new UILivewireFlux();
         if ($vormia->uninstall()) {
@@ -61,15 +57,15 @@ class UninstallCommand extends Command
             return 1;
         }
 
-        // Step 3: Remove routes
+        // Step 2: Remove routes
         $this->step('Removing routes from routes/web.php...');
         $this->removeRoutes();
 
-        // Step 4: Remove sidebar menu
+        // Step 3: Remove sidebar menu
         $this->step('Removing sidebar menu...');
         $this->removeSidebarMenu();
 
-        // Step 5: Clear caches
+        // Step 4: Clear caches
         $this->step('Clearing application caches...');
         $this->clearCaches();
 
@@ -93,44 +89,6 @@ class UninstallCommand extends Command
         $fallback = resource_path('views/components/layouts/app/sidebar.blade.php');
 
         return File::exists($primary) ? $primary : (File::exists($fallback) ? $fallback : null);
-    }
-
-    /**
-     * Create final backup before uninstallation
-     */
-    private function createFinalBackup()
-    {
-        $backupDir = storage_path('app/ui-livewireflux-admin-final-backup-' . date('Y-m-d-H-i-s'));
-
-        if (!File::exists($backupDir)) {
-            File::makeDirectory($backupDir, 0755, true);
-        }
-
-        $filesToBackup = [
-            app_path('View/Components/AdminPanel.php') => $backupDir . '/View/Components/AdminPanel.php',
-            app_path('Actions/Fortify/EnsureUserIsActive.php') => $backupDir . '/Actions/Fortify/EnsureUserIsActive.php',
-            resource_path('views/components/admin-panel.blade.php') => $backupDir . '/views/components/admin-panel.blade.php',
-            resource_path('views/livewire/admin') => $backupDir . '/views/livewire/admin',
-            base_path('routes/web.php') => $backupDir . '/routes/web.php',
-        ];
-
-        $sidebarPath = $this->getSidebarPath();
-        if ($sidebarPath !== null) {
-            $filesToBackup[$sidebarPath] = $backupDir . '/views/sidebar.blade.php';
-        }
-
-        foreach ($filesToBackup as $source => $destination) {
-            if (File::exists($source)) {
-                if (File::isDirectory($source)) {
-                    File::copyDirectory($source, $destination);
-                } else {
-                    File::ensureDirectoryExists(dirname($destination));
-                    File::copy($source, $destination);
-                }
-            }
-        }
-
-        $this->info("✅ Final backup created in: {$backupDir}");
     }
 
     /**
@@ -473,7 +431,6 @@ class UninstallCommand extends Command
         $this->line('   ✅ Sidebar menu code');
         $this->line('   ✅ EnsureUserIsActive action');
         $this->line('   ✅ Application caches cleared');
-        $this->line('   ✅ Final backup created in storage/app/');
         $this->newLine();
 
         $this->comment('📖 Final steps:');
