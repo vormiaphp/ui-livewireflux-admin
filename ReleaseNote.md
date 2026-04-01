@@ -1,5 +1,20 @@
 # Release Notes
 
+## v4.0.1
+
+### What changed
+
+- **Removed hardcoded Livewire layout from admin stubs**: all admin stub page components no longer use `#[Layout('layouts.admin')]` and now rely on your app’s default Livewire layout.
+- **Updated docs + guides**: `README.md`, `docs/UI-GUIDE.md`, and `docs/AI-GUIDE.md` were updated to match the new “default layout” approach.
+
+### Why this release
+
+Projects without a `layouts.admin` view were hitting: `Livewire page component layout view not found: [layouts.admin]`. Removing the attribute prevents that mismatch and lets the consuming app control layout globally.
+
+### Upgrade notes
+
+- If you previously published/copied the admin stub views into your app, re-run your package update/install flow (or manually remove `#[Layout('layouts.admin')]` from those files).
+
 ## v4.0.0
 
 ### What changed
