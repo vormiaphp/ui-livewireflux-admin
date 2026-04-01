@@ -1,5 +1,23 @@
 # Release Notes
 
+## v4.0.2
+
+### What changed
+
+- **Install publishes Fortify app stubs**: `php artisan ui-livewireflux-admin:install` runs `vendor:publish` for `Laravel\Fortify\FortifyServiceProvider` when `app/Actions/Fortify/PasswordValidationRules.php` is missing, so admin views that use `App\Actions\Fortify\PasswordValidationRules` work out of the box. If publish fails or the file is still missing, the installer prints the manual command and points to `docs/FORTIFY-IS-ACTIVE.md` (including optional `--force` re-publish).
+- **Documentation**: `docs/FORTIFY-IS-ACTIVE.md` covers `PasswordValidationRules`, install behavior, and careful use of `--force`. `docs/ROLE-ON-REGISTRATION.md` notes that `CreateNewUser.php` comes from Fortify publish. `docs/UI-GUIDE.md` and `docs/AI-GUIDE.md` clarify password forms and when `App\...` Fortify classes are intentional.
+- **README**: Changelog section removed (release history lives here and in git tags). Install and verify steps updated for Fortify publish.
+- **`ui-rules.mdc`**: Corrected outdated Volt / “light mode only” guidance; aligned with Livewire 4 anonymous components and `dark:*` stubs; points to the docs above.
+
+### Why this release
+
+Consuming apps often lacked Fortify-published `PasswordValidationRules` and related actions, which broke admin user create/edit stubs. Automating Fortify publish during install (with safe skip when already present) reduces that failure mode.
+
+### Upgrade notes
+
+- **New installs**: run `php artisan ui-livewireflux-admin:install` as usual; Fortify stubs publish when needed.
+- **Existing apps** missing only `PasswordValidationRules` (or other Fortify files): see `docs/FORTIFY-IS-ACTIVE.md` for normal publish vs `--force` (backup customizations first).
+
 ## v4.0.1
 
 ### What changed
