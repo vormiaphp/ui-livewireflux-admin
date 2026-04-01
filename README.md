@@ -30,7 +30,7 @@ This package runs on **Vormia v5**. Required dependencies (installed automatical
 - **livewire/flux** ^1.0
 - **laravel/fortify** ^2.0
 
-This package targets **Livewire 4** where Volt is bundled with Livewire. All components use `Livewire\Component` with `#[Layout('layouts.admin')]`.
+This package targets **Livewire 4** where Volt is bundled with Livewire. The admin page stubs are Livewire anonymous components (`new class extends Component`) and rely on your app’s **default Livewire layout**.
 
 ## Installation Process
 
@@ -157,7 +157,7 @@ All routes are protected by `auth` middleware.
 
 ### 3. Livewire Components
 
-Single-file Livewire components for each admin section (using `#[Layout('layouts.admin')]`):
+Single-file Livewire components for each admin section:
 
 - `resources/views/livewire/admin/admins/` - Admin user management
 - `resources/views/livewire/admin/control/categories/` - Category management
@@ -437,7 +437,7 @@ Use `Vormia\Vormia\Models\Role` from the Vormia package and attach by role model
 ### v3.0.9 (2026-04-01)
 
 - Restored all admin stub views and AdminPanel component
-- Upgraded all Livewire components to Livewire 4 (`Livewire\Component` + `#[Layout('layouts.admin')]`)
+- Upgraded all Livewire components to Livewire 4 (`Livewire\Component`)
 - Removed all `Livewire\Volt\Component` references
 
 ### v3.0.8 (2026-04-01)

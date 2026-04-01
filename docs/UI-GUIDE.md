@@ -10,7 +10,7 @@ When you add a new admin module, it should follow the same shape as the existing
 
 The consistent “look & flow” comes from:
 
-- **Layout**: every admin Livewire page uses `#[Layout('layouts.admin')]`
+- **Layout**: admin pages rely on your app’s **default Livewire layout** (no `#[Layout(...)]` required)
 - **Shell**: pages render inside `<x-admin-panel>` with `header`, `desc`, and an optional “action” button slot
 - **Patterns**:
   - `index` pages: search, pagination, table list, row actions (edit / activate / deactivate / delete)
@@ -51,16 +51,15 @@ And add the 3 routes in `routes/web.php` under the `admin` prefix group.
 
 ### 1) Admin layout
 
-Every page begins with a PHP block that declares an anonymous Livewire component using the admin layout:
+Every page begins with a PHP block that declares an anonymous Livewire component. It relies on your app’s default Livewire layout:
 
 ```php
 <?php
 
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
-new #[Layout('layouts.admin')] class extends Component {
+new class extends Component {
     use WithNotifications;
 
     // ...
@@ -119,12 +118,11 @@ Use this as your base. It matches the patterns used by e.g. `control/categories/
 <?php
 
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
-new #[Layout('layouts.admin')] class extends Component {
+new class extends Component {
     use WithPagination;
     use WithNotifications;
 
@@ -266,7 +264,7 @@ Use `wire:navigate` so navigation stays snappy with Livewire.
 ## Consistency checklist (before you call it “done”)
 
 - **Routes**: you have `index/create/edit` route names that match the existing conventions
-- **Layout**: `#[Layout('layouts.admin')]` is present in all 3 pages
+- **Layout**: you are using your app’s default Livewire layout (no `#[Layout(...)]` attribute)
 - **Shell**: pages use `<x-admin-panel>` with `header`, `desc`, and a top-right action button (where relevant)
 - **Feedback**: `{!! $this->renderNotification() !!}` is present and `WithNotifications` is used
 - **Dark mode**: you used `dark:*` classes similar to existing stubs

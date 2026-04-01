@@ -44,4 +44,3 @@ workspace.xml
 *.key
 *.crt
 *.csr
-/example

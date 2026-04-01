@@ -11,7 +11,7 @@ It’s based on `docs/UI-GUIDE.md` and the real stub patterns under:
 Your generated screens should match these conventions:
 
 - **Livewire anonymous components** at the top of each Blade file
-- **Layout**: `#[Layout('layouts.admin')]`
+- **Layout**: rely on your app’s **default Livewire layout** (no `#[Layout(...)]` attribute)
 - **Shell**: wrap content in `<x-admin-panel>` slots (`header`, `desc`, `button`)
 - **Notifications**: `use WithNotifications;` and `{!! $this->renderNotification() !!}`
 - **Index flow**: search + pagination + table + action buttons
@@ -60,7 +60,7 @@ Ask the AI to build in this order:
 
 Before you accept the AI output, check:
 
-- **Layout**: every file has `#[Layout('layouts.admin')]`
+- **Layout**: pages rely on your app’s default Livewire layout (no `#[Layout(...)]`)
 - **Shell**: every page wraps content in `<x-admin-panel>`
 - **Notifications**: `{!! $this->renderNotification() !!}` exists and trait is used
 - **Dark mode**: uses `dark:*` classes like the stubs
@@ -81,7 +81,7 @@ Goal: Create a new admin module named: <module_slug>
 
 It MUST match these conventions:
 - Use Livewire anonymous components at the top of each Blade file.
-- Every page uses #[Layout('layouts.admin')].
+- Use the app’s default Livewire layout (do NOT add `#[Layout(...)]`).
 - Wrap all content with <x-admin-panel> and provide header/desc/button slots.
 - Use the WithNotifications trait and render notifications using: {!! $this->renderNotification() !!}.
 - Follow the same Tailwind classes and table/list patterns used in these reference stubs:
