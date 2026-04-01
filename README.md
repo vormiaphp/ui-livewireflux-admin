@@ -3,7 +3,7 @@
 [![Packagist](https://img.shields.io/packagist/v/vormiaphp/ui-livewireflux-admin.svg)](https://packagist.org/packages/vormiaphp/ui-livewireflux-admin)
 [![GitHub](https://img.shields.io/github/stars/vormiaphp/ui-livewireflux-admin.svg)](https://github.com/vormiaphp/ui-livewireflux-admin)
 
-A Laravel package that provides a complete admin panel solution with pre-built components, routes, and views for managing categories, inheritance, locations, availability, and admin users. Built with Livewire Volt and Flux for a modern, reactive admin interface.
+A Laravel package that provides a complete admin panel solution with pre-built components, routes, and views for managing categories, inheritance, locations, availability, and admin users. Built with Livewire 4 and Flux for a modern, reactive admin interface.
 
 ## What is This Package?
 
@@ -11,7 +11,7 @@ A Laravel package that provides a complete admin panel solution with pre-built c
 
 - **AdminPanel View Component** - A reusable Blade component for consistent admin panel layouts
 - **Pre-configured Admin Routes** - Complete CRUD routes for all admin sections
-- **Livewire Volt Components** - Single-file components for categories, inheritance, locations, availability, and admin management
+- **Livewire Components** - Single-file Livewire components for categories, inheritance, locations, availability, and admin management
 - **Automatic Sidebar Integration** - Sidebar menu injection (requires livewire/flux)
 - **Role Management** - See `docs/ROLE-ON-REGISTRATION.md` for assigning roles on registration
 
@@ -30,7 +30,7 @@ This package runs on **Vormia v5**. Required dependencies (installed automatical
 - **livewire/flux** ^1.0
 - **laravel/fortify** ^2.0
 
-**Volt is not required** — with Vormia v5 / Livewire 4, Volt is bundled with Livewire.
+This package targets **Livewire 4** where Volt is bundled with Livewire. All components use `Livewire\Component` with `#[Layout('layouts.admin')]`.
 
 ## Installation Process
 
@@ -155,9 +155,9 @@ Pre-configured routes for all admin sections:
 
 All routes are protected by `auth` middleware.
 
-### 3. Livewire Volt Components
+### 3. Livewire Components
 
-Single-file components for each admin section:
+Single-file Livewire components for each admin section (using `#[Layout('layouts.admin')]`):
 
 - `resources/views/livewire/admin/admins/` - Admin user management
 - `resources/views/livewire/admin/control/categories/` - Category management
@@ -167,9 +167,9 @@ Single-file components for each admin section:
 
 Each section includes:
 
-- `index.php` / `index.blade.php` - List view
-- `create.php` / `create.blade.php` - Create form
-- `edit.php` / `edit.blade.php` - Edit form
+- `index.blade.php` - List view
+- `create.blade.php` - Create form
+- `edit.blade.php` - Edit form
 
 ### 4. Sidebar Menu Integration
 
@@ -217,7 +217,7 @@ Role models live in the Vormia package (`Vormia\Vormia\Models\Role`). To assign 
    - Backups are created during updates (stored in `storage/app/ui-livewireflux-admin-backups/`)
 
 7. **Dependencies**
-   - The package requires `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify`. Volt is not required (this package targets Vormia v5 / Livewire 4).
+   - The package requires `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify`. This package targets Livewire 4 (Volt is bundled with Livewire).
 
 ## Help, Update, and Uninstallation
 
@@ -349,13 +349,11 @@ UILivewireFlux-Admin/
 │   │                       ├── categories/
 │   │                       ├── inheritance/
 │   │                       └── locations/
+│   │   └── reference/
+│   │       ├── routes-to-add.php       # Routes snippet
+│   │       └── sidebar-menu-to-add.blade.php # Sidebar snippet
 │   ├── UILivewireFlux.php
 │   └── UILivewireFluxAdminServiceProvider.php
-├── src/
-│   └── stubs/
-│       └── reference/
-│           ├── routes-to-add.php       # Routes snippet
-│           └── sidebar-menu-to-add.blade.php # Sidebar snippet
 ├── composer.json
 └── README.md
 ```
@@ -399,7 +397,7 @@ route('admin.categories.edit', ['id' => 1])
 
 **Solution:**
 
-1. Ensure `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify` are installed. Volt is not required (this package runs on Vormia v5).
+1. Ensure `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify` are installed.
 2. Run `php artisan ui-livewireflux-admin:check-dependencies` to verify
 3. Check that your PHP version is >= 8.2
 4. Check that your Laravel version is 12.x or 13.x
@@ -436,9 +434,16 @@ Use `Vormia\Vormia\Models\Role` from the Vormia package and attach by role model
 
 ## Changelog
 
+### v3.0.9 (2026-04-01)
+
+- Restored all admin stub views and AdminPanel component
+- Upgraded all Livewire components to Livewire 4 (`Livewire\Component` + `#[Layout('layouts.admin')]`)
+- Removed all `Livewire\Volt\Component` references
+
 ### v3.0.8 (2026-04-01)
 
 - Added Laravel 13 support (`laravel/framework ^12.0 || ^13.0`)
+- Updated README: removed `use Livewire\Volt\Volt` references
 
 ### v3.0.0 (2025-03-01)
 
