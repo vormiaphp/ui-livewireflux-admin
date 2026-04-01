@@ -1,13 +1,12 @@
 <?php
 
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Vormia\Vormia\Models\Taxonomy;
 use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
-new #[Layout('layouts.admin')] class extends Component {
+new class extends Component {
     use WithPagination;
     use WithNotifications;
 

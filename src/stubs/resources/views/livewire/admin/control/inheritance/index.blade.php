@@ -1,7 +1,6 @@
 <?php
 
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -9,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Vormia\Vormia\Models\Taxonomy;
 use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
-new #[Layout('layouts.admin')] class extends Component {
+new class extends Component {
     //
     use WithPagination;
     use WithNotifications;

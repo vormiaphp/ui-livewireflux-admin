@@ -1,12 +1,11 @@
 <?php
 
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Vormia\Vormia\Models\Taxonomy;
 use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
-new #[Layout('layouts.admin')] class extends Component {
+new class extends Component {
     use WithNotifications;
 
     // Availability ID

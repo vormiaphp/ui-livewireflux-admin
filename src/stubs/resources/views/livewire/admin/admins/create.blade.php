@@ -6,12 +6,11 @@ use App\Models\User;
 use Vormia\Vormia\Traits\Livewire\WithNotifications;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-new #[Layout('layouts.admin')] class extends Component {
+new class extends Component {
     use PasswordValidationRules;
     use WithFileUploads;
     use WithNotifications;
