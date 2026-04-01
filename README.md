@@ -17,7 +17,12 @@ A Laravel package that provides a complete admin panel solution with pre-built c
 
 This package is designed to work seamlessly with the Vormia ecosystem and follows Laravel best practices.
 
-## Prerequisites
+## Laravel Compatibility
+
+This package supports:
+
+- **Laravel** ^12.0 or ^13.0
+- **PHP** ^8.2
 
 This package runs on **Vormia v5**. Required dependencies (installed automatically when you require this package):
 
@@ -66,19 +71,13 @@ After installation, verify that:
 If the routes were not automatically injected into `routes/web.php`, manually add them:
 
 1. Open `routes/web.php`
-2. **If you have configured your own starterkit**, add the Volt import at the top of the file:
-   ```php
-   use Livewire\Volt\Volt;
-   ```
-3. Find the `Route::middleware(['auth'])->group(function () { ... });` block
-4. Add the routes from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php` inside this block
+2. Find the `Route::middleware(['auth'])->group(function () { ... });` block
+3. Add the routes from `vendor/vormiaphp/ui-livewireflux-admin/src/stubs/reference/routes-to-add.php` inside this block
 
 **Example:**
 
 ```php
 <?php
-
-use Livewire\Volt\Volt; // Add this if you have configured your own starterkit
 
 Route::middleware(['auth'])->group(function () {
     // ... existing routes ...
@@ -403,7 +402,7 @@ route('admin.categories.edit', ['id' => 1])
 1. Ensure `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify` are installed. Volt is not required (this package runs on Vormia v5).
 2. Run `php artisan ui-livewireflux-admin:check-dependencies` to verify
 3. Check that your PHP version is >= 8.2
-4. Check that your Laravel version is >= 12.0
+4. Check that your Laravel version is 12.x or 13.x
 
 ### Routes Not Working
 
@@ -436,6 +435,10 @@ route('admin.categories.edit', ['id' => 1])
 Use `Vormia\Vormia\Models\Role` from the Vormia package and attach by role model (e.g. look up by name). See `docs/ROLE-ON-REGISTRATION.md` for how to update `CreateNewUser` to attach roles on registration.
 
 ## Changelog
+
+### v3.0.8 (2026-04-01)
+
+- Added Laravel 13 support (`laravel/framework ^12.0 || ^13.0`)
 
 ### v3.0.0 (2025-03-01)
 
