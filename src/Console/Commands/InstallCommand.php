@@ -44,19 +44,23 @@ class InstallCommand extends Command
             return 1;
         }
 
-        // Step 2: Inject routes
+        // Step 2: Publish Fortify app actions (PasswordValidationRules, CreateNewUser, etc.)
+        $this->step('Publishing Laravel Fortify stubs...');
+        $this->publishFortifyVendor();
+
+        // Step 3: Inject routes
         $this->step('Injecting routes into routes/web.php...');
         $this->injectRoutes();
 
-        // Step 3: Inject sidebar menu (livewire/flux is required)
+        // Step 4: Inject sidebar menu (livewire/flux is required)
         $this->step('Injecting sidebar menu...');
         $this->injectSidebarMenu();
 
-        // Step 4: Copy EnsureUserIsActive (laravel/fortify is required)
+        // Step 5: Copy EnsureUserIsActive (laravel/fortify is required)
         $this->step('Copying EnsureUserIsActive action...');
         $this->copyEnsureUserIsActiveOnly();
 
-        // Step 5: Clear caches
+        // Step 6: Clear caches
         $this->step('Clearing application caches...');
         $this->clearCaches();
 
@@ -101,6 +105,36 @@ class InstallCommand extends Command
     private function step($message)
     {
         $this->info("📦 {$message}");
+    }
+
+    /**
+     * Publish Fortify's app stubs so App\Actions\Fortify\PasswordValidationRules exists
+     * (required by admin Livewire views). Skips if already published.
+     */
+    private function publishFortifyVendor(): void
+    {
+        $passwordRules = app_path('Actions/Fortify/PasswordValidationRules.php');
+        if (File::exists($passwordRules)) {
+            $this->comment('   PasswordValidationRules already present. Skipping Fortify vendor:publish.');
+            return;
+        }
+
+        try {
+            $this->call('vendor:publish', [
+                '--provider' => 'Laravel\Fortify\FortifyServiceProvider',
+            ]);
+            if (File::exists($passwordRules)) {
+                $this->info('✅ Fortify actions published (includes PasswordValidationRules).');
+            } else {
+                $this->warn('⚠️  PasswordValidationRules.php is still missing after vendor:publish.');
+                $this->line('   If Fortify was published earlier with incomplete files, re-publish with --force (see docs/FORTIFY-IS-ACTIVE.md).');
+                $this->line('   php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider" --force');
+            }
+        } catch (\Throwable $e) {
+            $this->warn('⚠️  Could not publish Fortify assets: ' . $e->getMessage());
+            $this->line('   Run manually: php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider"');
+            $this->line('   Re-publish and overwrite (only if acceptable): add --force — see docs/FORTIFY-IS-ACTIVE.md');
+        }
     }
 
     /**

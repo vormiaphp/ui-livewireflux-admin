@@ -2,6 +2,18 @@
 
 This package optionally copies `EnsureUserIsActive.php` into your app when Laravel Fortify is installed. This action checks the `is_active` flag on the User model (used by the Vormia package) and blocks inactive users from logging in.
 
+## PasswordValidationRules (admin views)
+
+The admin Livewire stubs expect `App\Actions\Fortify\PasswordValidationRules` (a trait published by Fortify). The `ui-livewireflux-admin:install` command runs `vendor:publish` for `Laravel\Fortify\FortifyServiceProvider` when that file is not present yet.
+
+If you already published Fortify once and **only** `PasswordValidationRules` (or other pieces) are missing, a normal publish may not restore them. You can **re-publish and overwrite** all Fortify-published app files:
+
+```bash
+php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider" --force
+```
+
+Use **`--force` carefully**: it replaces the published Fortify files under your app (for example `app/Actions/Fortify/*` and related stubs), which can wipe customizations you made in those files. Back up or commit your changes before running it.
+
 ## What EnsureUserIsActive Does
 
 After authentication succeeds, it verifies that the user's `is_active` attribute is `true`. If the user is inactive, it logs them out and throws a validation error: "Your account is disabled."
