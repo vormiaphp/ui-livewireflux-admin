@@ -4,6 +4,7 @@ This package does not modify your authentication flow. To assign a role to new u
 
 ## Prerequisites
 
+- **`app/Actions/Fortify/CreateNewUser.php`** must exist. It is published by Laravel Fortify (for example when you run `php artisan ui-livewireflux-admin:install`, which publishes Fortify stubs when `PasswordValidationRules` is not present yet, or when you run `vendor:publish` for `Laravel\Fortify\FortifyServiceProvider` manually). See `docs/FORTIFY-IS-ACTIVE.md` if files are missing.
 - Your `App\Models\User` model must use the `Vormia\Vormia\Traits\HasVormiaRoles` trait from the `vormiaphp/vormia` package.
 - Vormia migrations must be run so the `role_user` pivot table exists.
 

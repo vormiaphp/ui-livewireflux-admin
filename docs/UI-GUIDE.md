@@ -253,6 +253,8 @@ Use the same building blocks the stubs use:
 - success/error notifications via `notifySuccess()` / `notifyError()`
 - “Go back” button styled like other stubs
 
+If the form includes **password** fields (for example admin user create/edit), follow `resources/views/livewire/admin/admins/create.blade.php` and `edit.blade.php`: use Fortify’s `PasswordValidationRules` trait from `App\Actions\Fortify\PasswordValidationRules` (requires Fortify stubs in `app/Actions/Fortify/` — see `docs/FORTIFY-IS-ACTIVE.md`).
+
 ## Sidebar + navigation (Flux)
 
 To add your module to the sidebar, follow the same style as:

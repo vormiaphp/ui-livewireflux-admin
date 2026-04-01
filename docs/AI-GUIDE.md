@@ -66,7 +66,7 @@ Before you accept the AI output, check:
 - **Dark mode**: uses `dark:*` classes like the stubs
 - **Action buttons**: follow the same color semantics (indigo/edit, green/activate, yellow/deactivate, red/delete)
 - **Model namespaces**: use package models when required (example from current stubs: `use Vormia\Vormia\Models\Taxonomy;`)
-- **No app-only namespaces unless intentional** (avoid `App\\...` in package stubs unless you explicitly want app-provided classes)
+- **App-level classes when matching existing stubs**: admin user screens intentionally use `App\Models\User` and `App\Actions\Fortify\PasswordValidationRules` (Fortify must be published into `app/Actions/Fortify/` — see `docs/FORTIFY-IS-ACTIVE.md`). For brand-new modules under `control/<module>/`, prefer Vormia package models unless the feature truly belongs in `App\...`.
 
 ## Promptbook (copy/paste)
 

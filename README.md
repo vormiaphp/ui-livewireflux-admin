@@ -49,17 +49,19 @@ php artisan ui-livewireflux-admin:install
 This command will:
 
 1. ✅ Check for required dependencies
-2. ✅ Copy all package files to your application
-3. ✅ Inject routes into `routes/web.php`
-4. ✅ Inject sidebar menu
-5. ✅ Copy `EnsureUserIsActive.php` — see `docs/FORTIFY-IS-ACTIVE.md` to register it in Fortify
-6. ✅ Clear application caches
+2. ✅ Copy package stubs into your application (views, `AdminPanel`, etc.)
+3. ✅ Publish Laravel Fortify app actions when `PasswordValidationRules` is not present yet (see `docs/FORTIFY-IS-ACTIVE.md` if you need to re-publish with `--force`)
+4. ✅ Inject routes into `routes/web.php`
+5. ✅ Inject sidebar menu
+6. ✅ Copy `EnsureUserIsActive.php` — register it in Fortify per `docs/FORTIFY-IS-ACTIVE.md`
+7. ✅ Clear application caches
 
 ### Step 3: Verify Installation
 
 After installation, verify that:
 
-- Files were copied to `app/View/Components/AdminPanel.php`
+- `app/View/Components/AdminPanel.php` and related views are present
+- `app/Actions/Fortify/` contains Fortify-published actions (including `PasswordValidationRules` when the publish step ran)
 - Routes were added to `routes/web.php`
 - Sidebar menu was added
 - Caches were cleared
@@ -431,23 +433,6 @@ route('admin.categories.edit', ['id' => 1])
 **Solution:**
 
 Use `Vormia\Vormia\Models\Role` from the Vormia package and attach by role model (e.g. look up by name). See `docs/ROLE-ON-REGISTRATION.md` for how to update `CreateNewUser` to attach roles on registration.
-
-## Changelog
-
-### v3.0.9 (2026-04-01)
-
-- Restored all admin stub views and AdminPanel component
-- Upgraded all Livewire components to Livewire 4 (`Livewire\Component`)
-- Removed all `Livewire\Volt\Component` references
-
-### v3.0.8 (2026-04-01)
-
-- Added Laravel 13 support (`laravel/framework ^12.0 || ^13.0`)
-- Updated README: removed `use Livewire\Volt\Volt` references
-
-### v3.0.0 (2025-03-01)
-
-- Major release with improvements and updates
 
 ## License
 
