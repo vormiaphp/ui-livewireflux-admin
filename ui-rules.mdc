@@ -4,36 +4,35 @@ globs: "**/*.blade.php,**/*.php"
 alwaysApply: false
 ---
 
-# Vormia UI Livewire Flux Admin – AI Guide
+# Vormia UI Livewire Flux Admin — Cursor hints
 
-Structure, sidebar, AdminPanel, and conventions for this Laravel admin package.
+Short rules for this repo. **Full detail:** `docs/UI-GUIDE.md` (style + flow), `docs/AI-GUIDE.md` (promptbook + checklist). Fortify: `docs/FORTIFY-IS-ACTIVE.md`. Roles: `docs/ROLE-ON-REGISTRATION.md`.
 
-## Project Structure
+## Project structure (stubs → app after install)
 
-- Admin components: `resources/views/livewire/admin/{section}/`
-- Control sections (categories, inheritance, locations, availability): `livewire/admin/control/`
-- Admins section: `livewire/admin/admins/`
-- Use single-file Volt components (`.blade.php` only)
+- Admin Livewire views: `resources/views/livewire/admin/`
+- Control sections (categories, inheritance, locations, availability): `livewire/admin/control/<module>/`
+- Admins: `livewire/admin/admins/`
+- Use **Livewire 4 anonymous single-file components** in `.blade.php` (`new class extends Component`), default Livewire layout — **no** `#[Layout(...)]`. Not Volt-specific.
 
 ## Sidebar
 
 - Primary: `resources/views/layouts/app/sidebar.blade.php`
 - Fallback: `resources/views/components/layouts/app/sidebar.blade.php`
-- Menu items go **inside** the Platform `flux:sidebar.group`, before `</flux:sidebar.group>`
-- Use `flux:sidebar.item` or `flux:navlist.item` (depending on sidebar structure)
-- Stub: `src/stubs/reference/sidebar-menu-to-add.blade.php`
+- Inject menu **inside** the Platform `flux:sidebar.group`, before `</flux:sidebar.group>`
+- Use `flux:sidebar.item` with `wire:navigate` where the stubs do
+- Reference: `src/stubs/reference/sidebar-menu-to-add.blade.php`
 
-## AdminPanel Component
+## AdminPanel
 
 - Blade: `resources/views/components/admin-panel.blade.php`
 - Class: `app/View/Components/AdminPanel.php`
-- Slots: `header`, `desc`, `button`, default `$slot`
-- Always wrap admin content in `<x-admin-panel>`
-- Use light mode only (no `dark:` classes)
+- Slots: `header`, `desc`, `button`, default slot
+- Wrap admin pages in `<x-admin-panel>`; use `WithNotifications` and `{!! $this->renderNotification() !!}`
+- Match stub **light + dark** Tailwind (`dark:*` classes) — see `docs/UI-GUIDE.md`
 
 ## Patterns
 
-- Use `Vormia\Vormia\Traits\Livewire\WithNotifications` for notifications, plus `WithPagination`, `#[Validate]`, `#[Computed]`
-- Route names: `admin.{section}.index`, `.create`, `.edit`
-- Use `wire:submit="save"`, `wire:model`, `wire:click`
-- See `docs/ROLE-ON-REGISTRATION.md` for role assignment, `docs/FORTIFY-IS-ACTIVE.md` for EnsureUserIsActive
+- `Vormia\Vormia\Traits\Livewire\WithNotifications`; pagination / `#[Validate]` / `#[Computed]` as in stubs
+- Route names: `admin.<section>.index`, `.create`, `.edit`
+- Password fields in admin-user flows: `App\Actions\Fortify\PasswordValidationRules` after Fortify publish (`docs/FORTIFY-IS-ACTIVE.md`)
