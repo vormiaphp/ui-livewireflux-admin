@@ -1,9 +1,9 @@
 <?php
 
 use App\Actions\Fortify\PasswordValidationRules;
-use App\Facades\Vrm\MediaForge;
+use VormiaPHP\Vormia\Facades\MediaForge;
 use App\Models\User;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;

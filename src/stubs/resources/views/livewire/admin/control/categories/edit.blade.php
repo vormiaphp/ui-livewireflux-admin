@@ -5,8 +5,9 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Facades\Vrm\MediaForge;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use VormiaPHP\Vormia\Facades\MediaForge;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithFileUploads;
@@ -32,7 +33,7 @@ new #[Layout('layouts.admin')] class extends Component {
     public function mount($id)
     {
         $this->category_id = $id;
-        $this->taxonomy = \App\Models\Vrm\Taxonomy::find($this->category_id);
+        $this->taxonomy = Taxonomy::find($this->category_id);
 
         if ($this->taxonomy) {
             $this->name = $this->taxonomy->name;

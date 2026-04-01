@@ -4,7 +4,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithNotifications;
@@ -34,7 +35,7 @@ new #[Layout('layouts.admin')] class extends Component {
         }
 
         $group = $this->taxonomy->group;
-        $query = \App\Models\Vrm\Taxonomy::where('is_active', true)
+        $query = Taxonomy::where('is_active', true)
             ->where('type', 'location')
             ->where('id', '!=', $this->location_id);
 
@@ -56,7 +57,7 @@ new #[Layout('layouts.admin')] class extends Component {
     public function mount($id): void
     {
         $this->location_id = $id;
-        $this->taxonomy = \App\Models\Vrm\Taxonomy::find($this->location_id);
+        $this->taxonomy = Taxonomy::find($this->location_id);
 
         if ($this->taxonomy) {
             $this->name = $this->taxonomy->name;

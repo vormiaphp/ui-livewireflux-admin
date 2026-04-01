@@ -6,7 +6,8 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     //
@@ -29,7 +30,7 @@ new #[Layout('layouts.admin')] class extends Component {
     #[Computed]
     public function results()
     {
-        $query = \App\Models\Vrm\Taxonomy::query();
+        $query = Taxonomy::query();
 
         // with slugs
         $query->with('slugs');
@@ -53,7 +54,7 @@ new #[Layout('layouts.admin')] class extends Component {
     // Activate
     public function activate($id)
     {
-        $category = \App\Models\Vrm\Taxonomy::find($id);
+        $category = Taxonomy::find($id);
         if ($category) {
             $category->is_active = true;
             $category->save();
@@ -67,7 +68,7 @@ new #[Layout('layouts.admin')] class extends Component {
     // Deactivate
     public function deactivate($id)
     {
-        $category = \App\Models\Vrm\Taxonomy::find($id);
+        $category = Taxonomy::find($id);
         if ($category) {
             $category->is_active = false;
             $category->save();
@@ -82,7 +83,7 @@ new #[Layout('layouts.admin')] class extends Component {
     public function delete($id)
     {
         try {
-            $category = \App\Models\Vrm\Taxonomy::find($id);
+            $category = Taxonomy::find($id);
             if ($category) {
                 $this->notifySuccess(__('Inheritance was deleted successfully!'));
                 $category->delete();

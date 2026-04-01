@@ -5,8 +5,9 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Facades\Vrm\MediaForge;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use VormiaPHP\Vormia\Facades\MediaForge;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithFileUploads;
@@ -45,7 +46,7 @@ new #[Layout('layouts.admin')] class extends Component {
             }
 
             // Create the Taxonomy
-            $_taxonomy = new \App\Models\Vrm\Taxonomy();
+            $_taxonomy = new Taxonomy();
             $_taxonomy->name = $_name;
             $_taxonomy->type = 'category';
             $_taxonomy->group = null;

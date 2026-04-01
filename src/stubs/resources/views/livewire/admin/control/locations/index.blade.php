@@ -4,7 +4,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithPagination;
@@ -43,7 +44,7 @@ new #[Layout('layouts.admin')] class extends Component {
     #[Computed]
     public function results()
     {
-        $query = \App\Models\Vrm\Taxonomy::query();
+        $query = Taxonomy::query();
 
         // with slugs
         $query->with('slugs');
@@ -68,7 +69,7 @@ new #[Layout('layouts.admin')] class extends Component {
     // Activate
     public function activate($id): void
     {
-        $location = \App\Models\Vrm\Taxonomy::find($id);
+        $location = Taxonomy::find($id);
         if ($location) {
             $location->is_active = true;
             $location->save();
@@ -82,7 +83,7 @@ new #[Layout('layouts.admin')] class extends Component {
     // Deactivate
     public function deactivate($id): void
     {
-        $location = \App\Models\Vrm\Taxonomy::find($id);
+        $location = Taxonomy::find($id);
         if ($location) {
             $location->is_active = false;
             $location->save();
@@ -97,7 +98,7 @@ new #[Layout('layouts.admin')] class extends Component {
     public function delete($id): void
     {
         try {
-            $location = \App\Models\Vrm\Taxonomy::find($id);
+            $location = Taxonomy::find($id);
             if ($location) {
                 $this->notifySuccess(__('Location was deleted successfully!'));
                 $location->delete();

@@ -4,7 +4,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithPagination;
@@ -26,7 +27,7 @@ new #[Layout('layouts.admin')] class extends Component {
     #[Computed]
     public function results()
     {
-        $query = \App\Models\Vrm\Taxonomy::query();
+        $query = Taxonomy::query();
 
         // with slugs
         $query->with('slugs');
@@ -50,7 +51,7 @@ new #[Layout('layouts.admin')] class extends Component {
     // Activate
     public function activate($id): void
     {
-        $availability = \App\Models\Vrm\Taxonomy::find($id);
+        $availability = Taxonomy::find($id);
         if ($availability) {
             $availability->is_active = true;
             $availability->save();
@@ -64,7 +65,7 @@ new #[Layout('layouts.admin')] class extends Component {
     // Deactivate
     public function deactivate($id): void
     {
-        $availabilities = \App\Models\Vrm\Taxonomy::find($id);
+        $availabilities = Taxonomy::find($id);
         if ($availabilities) {
             $availabilities->is_active = false;
             $availabilities->save();
@@ -79,7 +80,7 @@ new #[Layout('layouts.admin')] class extends Component {
     public function delete($id): void
     {
         try {
-            $availability = \App\Models\Vrm\Taxonomy::find($id);
+            $availability = Taxonomy::find($id);
             if ($availability) {
                 $this->notifySuccess(__('Availability was deleted successfully!'));
                 $availability->delete();

@@ -6,8 +6,9 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Facades\Vrm\MediaForge;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use VormiaPHP\Vormia\Facades\MediaForge;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithFileUploads;
@@ -32,7 +33,7 @@ new #[Layout('layouts.admin')] class extends Component {
     #[Computed]
     public function inheritance_list()
     {
-        $_inheritance_list = \App\Models\Vrm\Taxonomy::where('is_active', true)->where('group', 'inheritance')->get();
+        $_inheritance_list = Taxonomy::where('is_active', true)->where('group', 'inheritance')->get();
         return $_inheritance_list;
     }
 
@@ -47,7 +48,7 @@ new #[Layout('layouts.admin')] class extends Component {
             $_description = $this->description;
 
             // Create the Taxonomy
-            $_taxonomy = new \App\Models\Vrm\Taxonomy();
+            $_taxonomy = new Taxonomy();
             $_taxonomy->name = $_name;
             $_taxonomy->parent_id = $this->parent == 0 ? null : $this->parent;
             $_taxonomy->type = 'category';
@@ -80,7 +81,7 @@ new #[Layout('layouts.admin')] class extends Component {
     private function loadAllInheritance()
     {
         // Load all inheritance
-        $_inheritance_list = \App\Models\Vrm\Taxonomy::where('is_active', true)->where('group', 'inheritance')->get();
+        $_inheritance_list = Taxonomy::where('is_active', true)->where('group', 'inheritance')->get();
 
         // Dispatch parent inheritance options
         $this->dispatch('parent-inheritance-options', [

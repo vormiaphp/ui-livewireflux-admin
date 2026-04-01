@@ -3,7 +3,8 @@
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithNotifications;
@@ -21,7 +22,7 @@ new #[Layout('layouts.admin')] class extends Component {
     public function mount($id): void
     {
         $this->availabilities_id = $id;
-        $this->taxonomy = \App\Models\Vrm\Taxonomy::find($this->availabilities_id);
+        $this->taxonomy = Taxonomy::find($this->availabilities_id);
 
         if ($this->taxonomy) {
             $this->name = $this->taxonomy->name;

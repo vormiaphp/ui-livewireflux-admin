@@ -6,8 +6,9 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Facades\Vrm\MediaForge;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use VormiaPHP\Vormia\Facades\MediaForge;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithFileUploads;
@@ -29,7 +30,7 @@ new #[Layout('layouts.admin')] class extends Component {
     // Load the inheritance data when component mounts
     public function mount($id)
     {
-        $this->inheritance = \App\Models\Vrm\Taxonomy::findOrFail($id);
+        $this->inheritance = Taxonomy::findOrFail($id);
 
         // Populate form with existing data
         $this->name = $this->inheritance->name;
@@ -41,7 +42,7 @@ new #[Layout('layouts.admin')] class extends Component {
     #[Computed]
     public function inheritance_list()
     {
-        $_inheritance_list = \App\Models\Vrm\Taxonomy::where('is_active', true)
+        $_inheritance_list = Taxonomy::where('is_active', true)
             ->where('group', 'inheritance')
             ->where('id', '!=', $this->inheritance->id) // Exclude current inheritance from parent options
             ->get();

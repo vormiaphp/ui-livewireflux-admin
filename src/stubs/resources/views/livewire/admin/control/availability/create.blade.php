@@ -3,7 +3,8 @@
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithNotifications;
@@ -21,7 +22,7 @@ new #[Layout('layouts.admin')] class extends Component {
 
         try {
             // Create the Taxonomy
-            $_taxonomy = new \App\Models\Vrm\Taxonomy();
+            $_taxonomy = new Taxonomy();
             $_taxonomy->name = $this->name;
             $_taxonomy->type = 'availability';
             $_taxonomy->save();

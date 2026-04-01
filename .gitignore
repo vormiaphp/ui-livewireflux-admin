@@ -44,7 +44,4 @@ workspace.xml
 *.key
 *.crt
 *.csr
-
-example-package
-/references
-/missing
+/example

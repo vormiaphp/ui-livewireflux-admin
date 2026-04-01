@@ -4,7 +4,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use App\Traits\Vrm\Livewire\WithNotifications;
+use Vormia\Vormia\Models\Taxonomy;
+use Vormia\Vormia\Traits\Livewire\WithNotifications;
 
 new #[Layout('layouts.admin')] class extends Component {
     use WithNotifications;
@@ -46,7 +47,7 @@ new #[Layout('layouts.admin')] class extends Component {
     #[Computed]
     public function parent_list()
     {
-        $query = \App\Models\Vrm\Taxonomy::where('is_active', true)->where('type', 'location');
+        $query = Taxonomy::where('is_active', true)->where('type', 'location');
 
         // Filter parent options based on selected group
         // Country has no parent
@@ -86,7 +87,7 @@ new #[Layout('layouts.admin')] class extends Component {
 
         try {
             // Create the Taxonomy
-            $_taxonomy = new \App\Models\Vrm\Taxonomy();
+            $_taxonomy = new Taxonomy();
             $_taxonomy->name = $this->name;
             $_taxonomy->type = 'location';
             $_taxonomy->group = $this->group;
