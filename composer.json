@@ -16,7 +16,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0 || ^13.0",
         "vormiaphp/vormia": "^5.4",
-        "livewire/livewire": "^4.1",
+        "livewire/livewire": "^4.0",
         "livewire/flux": "^2.13.1",
         "laravel/fortify": "^1.34"
     },
