@@ -127,13 +127,13 @@ class InstallCommand extends Command
                 $this->info('✅ Fortify actions published (includes PasswordValidationRules).');
             } else {
                 $this->warn('⚠️  PasswordValidationRules.php is still missing after vendor:publish.');
-                $this->line('   If Fortify was published earlier with incomplete files, re-publish with --force (see docs/FORTIFY-IS-ACTIVE.md).');
+                $this->line('   If Fortify was published earlier with incomplete files, re-publish with --force (see docs/GUIDE.md#fortify-passwords-publish-and-active-users).');
                 $this->line('   php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider" --force');
             }
         } catch (\Throwable $e) {
             $this->warn('⚠️  Could not publish Fortify assets: ' . $e->getMessage());
             $this->line('   Run manually: php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider"');
-            $this->line('   Re-publish and overwrite (only if acceptable): add --force — see docs/FORTIFY-IS-ACTIVE.md');
+            $this->line('   Re-publish and overwrite (only if acceptable): add --force — see docs/GUIDE.md#fortify-passwords-publish-and-active-users');
         }
     }
 
@@ -335,7 +335,7 @@ class InstallCommand extends Command
 
     /**
      * Copy EnsureUserIsActive.php only. Does not modify FortifyServiceProvider.
-     * See docs/FORTIFY-IS-ACTIVE.md for registering the action in the auth pipeline.
+     * See docs/GUIDE.md#fortify-passwords-publish-and-active-users for registering the action in the auth pipeline.
      */
     private function copyEnsureUserIsActiveOnly(): void
     {
@@ -356,7 +356,7 @@ class InstallCommand extends Command
             File::ensureDirectoryExists(dirname($ensureUserIsActiveDest));
             File::copy($ensureUserIsActiveStub, $ensureUserIsActiveDest);
             $this->info('✅ EnsureUserIsActive.php copied successfully.');
-            $this->comment('   Add it to your Fortify auth pipeline — see docs/FORTIFY-IS-ACTIVE.md');
+            $this->comment('   Add it to your Fortify auth pipeline — see docs/GUIDE.md#fortify-passwords-publish-and-active-users');
         } catch (\Exception $e) {
             $this->error('❌ Failed to copy EnsureUserIsActive.php: ' . $e->getMessage());
         }
@@ -398,8 +398,8 @@ class InstallCommand extends Command
         $this->comment('📋 Next steps:');
         $this->line('   1. Review routes/web.php to ensure admin routes were added');
         $this->line('   2. Review sidebar.blade.php to ensure menu items were added');
-        $this->line('   3. To assign a role on registration: see docs/ROLE-ON-REGISTRATION.md');
-        $this->line('   4. If using Fortify + EnsureUserIsActive: see docs/FORTIFY-IS-ACTIVE.md');
+        $this->line('   3. To assign a role on registration: see docs/GUIDE.md#roles-assign-on-registration');
+        $this->line('   4. If using Fortify + EnsureUserIsActive: see docs/GUIDE.md#fortify-passwords-publish-and-active-users');
         $this->newLine();
 
         $this->comment('📖 For help and available commands: php artisan ui-livewireflux-admin:help');

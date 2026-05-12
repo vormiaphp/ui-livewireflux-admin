@@ -13,7 +13,7 @@ A Laravel package that provides a complete admin panel solution with pre-built c
 - **Pre-configured Admin Routes** - Complete CRUD routes for all admin sections
 - **Livewire Components** - Single-file Livewire components for categories, inheritance, locations, availability, and admin management
 - **Automatic Sidebar Integration** - Sidebar menu injection (requires livewire/flux)
-- **Role Management** - See `docs/ROLE-ON-REGISTRATION.md` for assigning roles on registration
+- **Role Management** - See `docs/GUIDE.md#roles-assign-on-registration` for assigning roles on registration
 
 This package is designed to work seamlessly with the Vormia ecosystem and follows Laravel best practices.
 
@@ -24,11 +24,16 @@ This package supports:
 - **Laravel** ^12.0 or ^13.0
 - **PHP** ^8.2
 
-This package runs on **Vormia v5**. Required dependencies (installed automatically when you require this package):
+This package runs on **Vormia 5.4+** with **Livewire 4.1+** and **Flux 2.13.1+**. Required dependencies (installed automatically when you require this package):
 
-- **vormiaphp/vormia** ^5.0 (no less)
-- **livewire/flux** ^1.0
-- **laravel/fortify** ^2.0
+- **vormiaphp/vormia** ^5.4
+- **livewire/livewire** ^4.1
+- **livewire/flux** ^2.13.1
+- **laravel/fortify** ^1.34
+
+Flux 1.x, Fortify 2.x, and older minors outside the ranges above are not in the supported matrix.
+
+**Developer guide:** [`docs/GUIDE.md`](docs/GUIDE.md) — UI flow and style, AI promptbook, Fortify (`PasswordValidationRules`, `EnsureUserIsActive`), and assigning roles on registration.
 
 This package targets **Livewire 4** where Volt is bundled with Livewire. The admin page stubs are Livewire anonymous components (`new class extends Component`) and rely on your app’s **default Livewire layout**.
 
@@ -50,10 +55,10 @@ This command will:
 
 1. ✅ Check for required dependencies
 2. ✅ Copy package stubs into your application (views, `AdminPanel`, etc.)
-3. ✅ Publish Laravel Fortify app actions when `PasswordValidationRules` is not present yet (see `docs/FORTIFY-IS-ACTIVE.md` if you need to re-publish with `--force`)
+3. ✅ Publish Laravel Fortify app actions when `PasswordValidationRules` is not present yet (see `docs/GUIDE.md#fortify-passwords-publish-and-active-users` if you need to re-publish with `--force`)
 4. ✅ Inject routes into `routes/web.php`
 5. ✅ Inject sidebar menu
-6. ✅ Copy `EnsureUserIsActive.php` — register it in Fortify per `docs/FORTIFY-IS-ACTIVE.md`
+6. ✅ Copy `EnsureUserIsActive.php` — register it in Fortify per `docs/GUIDE.md#fortify-passwords-publish-and-active-users`
 7. ✅ Clear application caches
 
 ### Step 3: Verify Installation
@@ -185,7 +190,7 @@ The sidebar automatically includes:
 
 ### 5. Role Management
 
-Role models live in the Vormia package (`Vormia\Vormia\Models\Role`). To assign roles to new users on registration, see `docs/ROLE-ON-REGISTRATION.md`.
+Role models live in the Vormia package (`Vormia\Vormia\Models\Role`). To assign roles to new users on registration, see `docs/GUIDE.md#roles-assign-on-registration`.
 
 ## What to Be Aware Of
 
@@ -201,7 +206,7 @@ Role models live in the Vormia package (`Vormia\Vormia\Models\Role`). To assign 
    - Ensure your application has this middleware configured
 
 3. **Role models**
-   - Roles are referenced from the Vormia package: `Vormia\Vormia\Models\Role`. See `docs/ROLE-ON-REGISTRATION.md` for how to assign roles on registration.
+   - Roles are referenced from the Vormia package: `Vormia\Vormia\Models\Role`. See `docs/GUIDE.md#roles-assign-on-registration` for how to assign roles on registration.
 
 4. **Sidebar File Location**
    - The package checks (in order): `resources/views/layouts/app/sidebar.blade.php`, then `resources/views/components/layouts/app/sidebar.blade.php`
@@ -219,7 +224,7 @@ Role models live in the Vormia package (`Vormia\Vormia\Models\Role`). To assign 
    - Backups are created during updates (stored in `storage/app/ui-livewireflux-admin-backups/`)
 
 7. **Dependencies**
-   - The package requires `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify`. This package targets Livewire 4 (Volt is bundled with Livewire).
+   - The package requires `vormiaphp/vormia` ^5.4, `livewire/livewire` ^4.1, `livewire/flux` ^2.13.1, and `laravel/fortify` ^1.34. Volt is bundled with Livewire 4.
 
 ## Help, Update, and Uninstallation
 
@@ -399,7 +404,7 @@ route('admin.categories.edit', ['id' => 1])
 
 **Solution:**
 
-1. Ensure `vormiaphp/vormia`, `livewire/flux`, and `laravel/fortify` are installed.
+1. Ensure `vormiaphp/vormia` ^5.4, `livewire/livewire` ^4.1, `livewire/flux` ^2.13.1, and `laravel/fortify` ^1.34 are installed (see **Laravel Compatibility** above).
 2. Run `php artisan ui-livewireflux-admin:check-dependencies` to verify
 3. Check that your PHP version is >= 8.2
 4. Check that your Laravel version is 12.x or 13.x
@@ -432,7 +437,7 @@ route('admin.categories.edit', ['id' => 1])
 
 **Solution:**
 
-Use `Vormia\Vormia\Models\Role` from the Vormia package and attach by role model (e.g. look up by name). See `docs/ROLE-ON-REGISTRATION.md` for how to update `CreateNewUser` to attach roles on registration.
+Use `Vormia\Vormia\Models\Role` from the Vormia package and attach by role model (e.g. look up by name). See `docs/GUIDE.md#roles-assign-on-registration` for how to update `CreateNewUser` to attach roles on registration.
 
 ## License
 

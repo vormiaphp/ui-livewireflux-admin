@@ -11,7 +11,7 @@ class EnsureUserIsActive
     /**
      * Ensure the authenticated user is active (is_active flag).
      * Run this in the Fortify auth pipeline after AttemptToAuthenticate.
-     * See docs/FORTIFY-IS-ACTIVE.md for registration.
+     * See docs/GUIDE.md#fortify-passwords-publish-and-active-users for registration.
      */
     public function __invoke(Request $request, callable $next)
     {

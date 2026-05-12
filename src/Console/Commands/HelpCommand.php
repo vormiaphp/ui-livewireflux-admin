@@ -150,8 +150,8 @@ class HelpCommand extends Command
             'Admin Routes' => 'Pre-configured routes for categories, inheritance, locations, availability, and admins',
             'Volt Components' => 'Livewire Volt components for all admin sections',
             'Sidebar Integration' => 'Automatic sidebar menu injection (livewire/flux required)',
-            'Role on Registration' => 'See docs/ROLE-ON-REGISTRATION.md for assigning role on user registration',
-            'EnsureUserIsActive' => 'See docs/FORTIFY-IS-ACTIVE.md (laravel/fortify required)',
+            'Role on Registration' => 'See docs/GUIDE.md#roles-assign-on-registration for assigning role on user registration',
+            'EnsureUserIsActive' => 'See docs/GUIDE.md#fortify-passwords-publish-and-active-users (laravel/fortify required)',
         ];
 
         foreach ($features as $feature => $description) {
@@ -211,11 +211,11 @@ class HelpCommand extends Command
 
         $this->line('  <fg=white>GitHub:</> https://github.com/vormiaphp/ui-livewireflux-admin');
         $this->line('  <fg=white>Installation:</> composer require vormiaphp/ui-livewireflux-admin');
-        $this->line('  <fg=white>Role on registration:</> docs/ROLE-ON-REGISTRATION.md');
-        $this->line('  <fg=white>Fortify is_active:</> docs/FORTIFY-IS-ACTIVE.md');
+        $this->line('  <fg=white>Role on registration:</> docs/GUIDE.md#roles-assign-on-registration');
+        $this->line('  <fg=white>Fortify is_active:</> docs/GUIDE.md#fortify-passwords-publish-and-active-users');
 
         $this->newLine();
-        $this->comment('💡 For role assignment and Fortify setup, see the docs/ directory.');
+        $this->comment('💡 Developer guide: docs/GUIDE.md (UI, AI prompts, Fortify, roles).');
         $this->newLine();
 
         $this->info('🎉 Thank you for using UI Livewire Flux Admin!');

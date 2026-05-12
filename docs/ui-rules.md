@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Vormia UI Livewire Flux Admin — Cursor hints
 
-Short rules for this repo. **Full detail:** `docs/UI-GUIDE.md` (style + flow), `docs/AI-GUIDE.md` (promptbook + checklist). Fortify: `docs/FORTIFY-IS-ACTIVE.md`. Roles: `docs/ROLE-ON-REGISTRATION.md`.
+**Full guide (single doc):** [`docs/GUIDE.md`](GUIDE.md) — UI flow/style, AI prompts, Fortify, roles on registration.
 
 ## Project structure (stubs → app after install)
 
@@ -29,10 +29,10 @@ Short rules for this repo. **Full detail:** `docs/UI-GUIDE.md` (style + flow), `
 - Class: `app/View/Components/AdminPanel.php`
 - Slots: `header`, `desc`, `button`, default slot
 - Wrap admin pages in `<x-admin-panel>`; use `WithNotifications` and `{!! $this->renderNotification() !!}`
-- Match stub **light + dark** Tailwind (`dark:*` classes) — see `docs/UI-GUIDE.md`
+- Match stub **light + dark** Tailwind (`dark:*` classes) — see [`docs/GUIDE.md`](GUIDE.md#ui-flow-and-style)
 
 ## Patterns
 
 - `Vormia\Vormia\Traits\Livewire\WithNotifications`; pagination / `#[Validate]` / `#[Computed]` as in stubs
 - Route names: `admin.<section>.index`, `.create`, `.edit`
-- Password fields in admin-user flows: `App\Actions\Fortify\PasswordValidationRules` after Fortify publish (`docs/FORTIFY-IS-ACTIVE.md`)
+- Password fields in admin-user flows: `App\Actions\Fortify\PasswordValidationRules` after Fortify publish — see [`docs/GUIDE.md`](GUIDE.md#fortify-passwords-publish-and-active-users)

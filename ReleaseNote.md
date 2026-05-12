@@ -1,5 +1,27 @@
 # Release Notes
 
+## v4.0.4
+
+### What changed
+
+- **Documentation**: Merged `docs/UI-GUIDE.md`, `docs/AI-GUIDE.md`, `docs/FORTIFY-IS-ACTIVE.md`, and `docs/ROLE-ON-REGISTRATION.md` into a single [`docs/GUIDE.md`](docs/GUIDE.md) with a table of contents and section anchors. [`docs/ui-rules.mdc`](docs/ui-rules.mdc) remains the short Cursor rules file and links into `docs/GUIDE.md`.
+- **References**: `README.md`, install/help commands, and `EnsureUserIsActive` stub comments now point to `docs/GUIDE.md` (with hash fragments where helpful).
+
+### Upgrade notes
+
+- If you bookmarked the old doc paths, use `docs/GUIDE.md` and the headings **UI**, **AI**, **Fortify**, or **Roles** (anchors match the old topics).
+
+## v4.0.3
+
+### What changed
+
+- **Composer `require`**: Raised minimum supported versions to align with the current stack: `vormiaphp/vormia` ^5.4, `livewire/livewire` ^4.1, `livewire/flux` ^2.13.1, `laravel/fortify` ^1.34 (Flux 1.x and Fortify 2.x are no longer in the declared range).
+- **README**: Dependency bullets and troubleshooting text updated to match.
+
+### Upgrade notes
+
+- Before upgrading, bump consuming apps to at least those versions (or compatible newer minors within the same major lines). Run `composer update` and resolve any conflicts if you were on Flux 1, Fortify 2, Vormia below 5.4, or Livewire below 4.1.
+
 ## v4.0.2
 
 ### What changed
