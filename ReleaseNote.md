@@ -1,5 +1,17 @@
 # Release Notes
 
+## v4.1.1
+
+### What changed
+
+- **`ui-livewireflux-admin:install`**: Fortify publish now uses **`--tag=fortify-support` only** (action stubs under `app/Actions/Fortify/`, etc.). Fortify **database migrations** (`fortify-migrations`, including two-factor and passkeys) are **no longer** published by install, avoiding duplicate-column errors on apps that already had those columns. Publish migrations manually when needed: `php artisan vendor:publish --tag=fortify-migrations` (see [`README.md`](README.md) and [`docs/GUIDE.md`](docs/GUIDE.md#fortify-passwords-publish-and-active-users)).
+- **Docs & CLI**: [`README.md`](README.md) documents optional Fortify migrations; [`docs/GUIDE.md`](docs/GUIDE.md) explains Fortify tags and safer `--force` on `fortify-support`; `php artisan ui-livewireflux-admin:help` adds troubleshooting and an example for `fortify-migrations`.
+
+### Upgrade notes
+
+- **Existing apps**: No action required if you already migrated. **New installs** that need Fortify’s 2FA/passkeys schema must run `vendor:publish --tag=fortify-migrations` (then `migrate`) when that schema is not already present.
+- **Re-publish Fortify stubs**: Prefer `vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider" --tag=fortify-support` (and `--force` only on that tag) instead of publishing the whole Fortify provider with `--force`, which can republish migrations and reintroduce duplicate files.
+
 ## v4.1.0
 
 ### What changed

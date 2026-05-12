@@ -58,7 +58,7 @@ class HelpCommand extends Command
         $commands = [
             [
                 'command' => 'ui-livewireflux-admin:install',
-                'description' => 'Install UI Livewire Flux Admin package with all files and configurations',
+                'description' => 'Install package stubs, routes, sidebar; publishes Fortify fortify-support only (no DB migrations)',
                 'options' => null
             ],
             [
@@ -106,6 +106,11 @@ class HelpCommand extends Command
                 'title' => 'Installation',
                 'command' => 'php artisan ui-livewireflux-admin:install',
                 'description' => 'Install UI Livewire Flux Admin with all files and configurations'
+            ],
+            [
+                'title' => 'Fortify migrations (optional)',
+                'command' => 'php artisan vendor:publish --tag=fortify-migrations',
+                'description' => 'Only if you need Fortify 2FA/passkeys tables and they are not already in your schema; then run php artisan migrate'
             ],
             [
                 'title' => 'Update Package',
@@ -194,6 +199,10 @@ class HelpCommand extends Command
 
         $this->line('  <fg=white>Issue:</> Sidebar menu not appearing');
         $this->line('  <fg=gray>Solution:</> Ensure livewire/flux is installed and sidebar file exists');
+        $this->newLine();
+
+        $this->line('  <fg=white>Issue:</> migrate fails with duplicate two_factor_* column');
+        $this->line('  <fg=gray>Solution:</> Install publishes Fortify support stubs only, not migrations. If duplicate Fortify migration files exist and columns are already on users, remove the extra migration (if never applied) or adjust schema. Publish migrations only when needed: vendor:publish --tag=fortify-migrations — see docs/GUIDE.md#fortify-passwords-publish-and-active-users');
         $this->newLine();
     }
 

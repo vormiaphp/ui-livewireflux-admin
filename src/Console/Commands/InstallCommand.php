@@ -44,7 +44,7 @@ class InstallCommand extends Command
             return 1;
         }
 
-        // Step 2: Publish Fortify app actions (PasswordValidationRules, CreateNewUser, etc.)
+        // Step 2: Publish Fortify support stubs only (fortify-support tag; no database migrations)
         $this->step('Publishing Laravel Fortify stubs...');
         $this->publishFortifyVendor();
 
@@ -108,32 +108,34 @@ class InstallCommand extends Command
     }
 
     /**
-     * Publish Fortify's app stubs so App\Actions\Fortify\PasswordValidationRules exists
-     * (required by admin Livewire views). Skips if already published.
+     * Publish Fortify's app stubs (fortify-support tag) so PasswordValidationRules and related
+     * actions exist under app/Actions/Fortify. Does not publish fortify-migrations (2FA/passkeys).
+     * Skips if PasswordValidationRules is already present.
      */
     private function publishFortifyVendor(): void
     {
         $passwordRules = app_path('Actions/Fortify/PasswordValidationRules.php');
         if (File::exists($passwordRules)) {
-            $this->comment('   PasswordValidationRules already present. Skipping Fortify vendor:publish.');
+            $this->comment('   PasswordValidationRules already present. Skipping Fortify vendor:publish (fortify-support).');
             return;
         }
 
         try {
             $this->call('vendor:publish', [
                 '--provider' => 'Laravel\Fortify\FortifyServiceProvider',
+                '--tag' => 'fortify-support',
             ]);
             if (File::exists($passwordRules)) {
-                $this->info('✅ Fortify actions published (includes PasswordValidationRules).');
+                $this->info('✅ Fortify support stubs published (PasswordValidationRules and related actions). Database migrations were not published.');
             } else {
                 $this->warn('⚠️  PasswordValidationRules.php is still missing after vendor:publish.');
-                $this->line('   If Fortify was published earlier with incomplete files, re-publish with --force (see docs/GUIDE.md#fortify-passwords-publish-and-active-users).');
-                $this->line('   php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider" --force');
+                $this->line('   Re-publish the support tag with --force only if acceptable (overwrites published Fortify stubs): docs/GUIDE.md#fortify-passwords-publish-and-active-users');
+                $this->line('   php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider" --tag=fortify-support --force');
             }
         } catch (\Throwable $e) {
             $this->warn('⚠️  Could not publish Fortify assets: ' . $e->getMessage());
-            $this->line('   Run manually: php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider"');
-            $this->line('   Re-publish and overwrite (only if acceptable): add --force — see docs/GUIDE.md#fortify-passwords-publish-and-active-users');
+            $this->line('   Run manually: php artisan vendor:publish --provider="Laravel\\Fortify\\FortifyServiceProvider" --tag=fortify-support');
+            $this->line('   To overwrite stubs: add --tag=fortify-support --force — see docs/GUIDE.md#fortify-passwords-publish-and-active-users');
         }
     }
 
@@ -400,6 +402,8 @@ class InstallCommand extends Command
         $this->line('   2. Review sidebar.blade.php to ensure menu items were added');
         $this->line('   3. To assign a role on registration: see docs/GUIDE.md#roles-assign-on-registration');
         $this->line('   4. If using Fortify + EnsureUserIsActive: see docs/GUIDE.md#fortify-passwords-publish-and-active-users');
+        $this->line('   5. Fortify database migrations were not installed by this command. If you need 2FA/passkeys tables and they are not already in your schema: php artisan vendor:publish --tag=fortify-migrations');
+        $this->line('      Skip or adjust if users already has two_factor_* columns (e.g. Jetstream/Breeze); see README.md and docs/GUIDE.md#fortify-passwords-publish-and-active-users');
         $this->newLine();
 
         $this->comment('📖 For help and available commands: php artisan ui-livewireflux-admin:help');

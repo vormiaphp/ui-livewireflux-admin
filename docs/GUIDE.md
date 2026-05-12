@@ -514,15 +514,35 @@ This package optionally copies `EnsureUserIsActive.php` into your app when Larav
 
 ### PasswordValidationRules (admin views)
 
-The admin Livewire stubs expect `App\Actions\Fortify\PasswordValidationRules` (a trait published by Fortify). The `ui-livewireflux-admin:install` command runs `vendor:publish` for `Laravel\Fortify\FortifyServiceProvider` when that file is not present yet.
+The admin Livewire stubs expect `App\Actions\Fortify\PasswordValidationRules` (a trait published by Fortify). The `ui-livewireflux-admin:install` command runs `vendor:publish` for `Laravel\Fortify\FortifyServiceProvider` with **`--tag=fortify-support`** when `PasswordValidationRules.php` is not present yet. That publishes action stubs under `app/Actions/Fortify/` (and the app `FortifyServiceProvider` stub) but **does not** publish Fortify database migrations.
 
-If you already published Fortify once and **only** `PasswordValidationRules` (or other pieces) are missing, a normal publish may not restore them. You can **re-publish and overwrite** all Fortify-published app files:
+### Fortify publish tags (reference)
+
+| Tag | What it publishes |
+| --- | --- |
+| `fortify-support` | `app/Actions/Fortify/*` stubs (including `PasswordValidationRules`) and `app/Providers/FortifyServiceProvider.php` stub |
+| `fortify-migrations` | Migrations for two-factor columns on `users` and the `passkeys` table (and related) — **opt-in**; run only when your schema does not already include them |
+| `fortify-config` | `config/fortify.php` |
+
+Install uses **`fortify-support` only**. For optional 2FA/passkeys schema, see [`README.md`](../README.md) (Fortify database section) and publish `fortify-migrations` manually when needed.
+
+### Re-publish or missing stubs
+
+If files under `app/Actions/Fortify/` are missing or incomplete, publish the support tag:
 
 ```bash
-php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider" --force
+php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider" --tag=fortify-support
 ```
 
-Use **`--force` carefully**: it replaces the published Fortify files under your app (for example `app/Actions/Fortify/*` and related stubs), which can wipe customizations you made in those files. Back up or commit your changes before running it.
+If files exist but are wrong or truncated and you intend to **overwrite** Fortify-published stubs (back up or commit first):
+
+```bash
+php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider" --tag=fortify-support --force
+```
+
+Use **`--tag=fortify-support --force`**, not a bare `--provider ... --force`, because publishing the **whole** provider with `--force` also republishes **`fortify-migrations`**, which can add duplicate migrations and cause `migrate` to fail with duplicate `two_factor_*` columns if those columns already exist.
+
+Use **`--force` carefully**: it replaces published Fortify stub files under your app, which can wipe customizations. Back up or commit your changes before running it.
 
 ### What EnsureUserIsActive does
 
@@ -589,7 +609,7 @@ This package does not modify your authentication flow. To assign a role to new u
 
 ### Prerequisites
 
-- **`app/Actions/Fortify/CreateNewUser.php`** must exist. It is published by Laravel Fortify (for example when you run `php artisan ui-livewireflux-admin:install`, which publishes Fortify stubs when `PasswordValidationRules` is not present yet, or when you run `vendor:publish` for `Laravel\Fortify\FortifyServiceProvider` manually). See [Fortify: passwords, publish, and active users](#fortify-passwords-publish-and-active-users) if files are missing.
+- **`app/Actions/Fortify/CreateNewUser.php`** must exist. It is published by Laravel Fortify (for example when you run `php artisan ui-livewireflux-admin:install`, which publishes the `fortify-support` tag when `PasswordValidationRules` is not present yet, or when you run `vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider" --tag=fortify-support` manually). See [Fortify: passwords, publish, and active users](#fortify-passwords-publish-and-active-users) if files are missing.
 - Your `App\Models\User` model must use the `Vormia\Vormia\Traits\HasVormiaRoles` trait from the `vormiaphp/vormia` package.
 - Vormia migrations must be run so the `role_user` pivot table exists.
 

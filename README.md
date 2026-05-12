@@ -55,7 +55,7 @@ This command will:
 
 1. ✅ Check for required dependencies
 2. ✅ Copy package stubs into your application (views, `AdminPanel`, etc.)
-3. ✅ Publish Laravel Fortify app actions when `PasswordValidationRules` is not present yet (see `docs/GUIDE.md#fortify-passwords-publish-and-active-users` if you need to re-publish with `--force`)
+3. ✅ Publish Laravel Fortify **support stubs only** (`--tag=fortify-support`: `PasswordValidationRules` and related files under `app/Actions/Fortify/` when `PasswordValidationRules` is not present yet). Fortify **database migrations are not** published by install (see **Fortify database (optional)** below and `docs/GUIDE.md#fortify-passwords-publish-and-active-users` for re-publish with `--force` on the support tag only)
 4. ✅ Inject routes into `routes/web.php`
 5. ✅ Inject sidebar menu
 6. ✅ Copy `EnsureUserIsActive.php` — register it in Fortify per `docs/GUIDE.md#fortify-passwords-publish-and-active-users`
@@ -66,10 +66,21 @@ This command will:
 After installation, verify that:
 
 - `app/View/Components/AdminPanel.php` and related views are present
-- `app/Actions/Fortify/` contains Fortify-published actions (including `PasswordValidationRules` when the publish step ran)
+- `app/Actions/Fortify/` contains the Fortify support stubs (including `PasswordValidationRules` when the publish step ran). New migration files under `database/migrations/` from Fortify appear only if **you** run `vendor:publish --tag=fortify-migrations` (install does not add them).
 - Routes were added to `routes/web.php`
 - Sidebar menu was added
 - Caches were cleared
+
+### Fortify database (optional)
+
+This package’s install command does **not** run `vendor:publish` for Fortify’s `fortify-migrations` tag. If you use Fortify two-factor authentication or passkeys **and** your database does not already have the required columns or `passkeys` table, publish migrations yourself, then migrate:
+
+```bash
+php artisan vendor:publish --tag=fortify-migrations
+php artisan migrate
+```
+
+Many apps already have `two_factor_*` columns on `users` (for example from Jetstream, Breeze, or an earlier manual publish). If `php artisan migrate` fails with **duplicate column** errors on `two_factor_secret`, do not run the duplicate migration: remove the extra migration file if it was never applied, or adjust your schema/docs per [`docs/GUIDE.md#fortify-passwords-publish-and-active-users`](docs/GUIDE.md#fortify-passwords-publish-and-active-users).
 
 ## Manual Configuration (If Needed)
 
