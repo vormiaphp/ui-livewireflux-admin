@@ -1,5 +1,15 @@
 # Release Notes
 
+## v4.1.0
+
+### What changed
+
+- **Composer `require`**: `livewire/livewire` is now **^4.0** (previously **^4.1**), so apps on Livewire 4.0.x satisfy the dependency without being forced to 4.1+ for this package alone.
+
+### Upgrade notes
+
+- No stub or API changes. If you already use Livewire 4.1 or newer, behavior is unchanged. If `composer update` previously failed because you stayed on Livewire 4.0.x, try again after upgrading to this release.
+
 ## v4.0.4
 
 ### What changed
