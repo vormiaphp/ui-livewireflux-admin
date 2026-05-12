@@ -33,7 +33,7 @@ This package runs on **Vormia 5.4+** with **Livewire 4.1+** and **Flux 2.13.1+**
 
 Flux 1.x, Fortify 2.x, and older minors outside the ranges above are not in the supported matrix.
 
-**Developer guide:** [`docs/GUIDE.md`](docs/GUIDE.md) — UI flow and style, AI promptbook, Fortify (`PasswordValidationRules`, `EnsureUserIsActive`), and assigning roles on registration.
+**Developer guide:** [`docs/GUIDE.md`](docs/GUIDE.md) — UI flow and style, AI promptbook, Fortify (`PasswordValidationRules`, `EnsureUserIsActive`), assigning roles on registration, and quick-reference layout patterns (YAML frontmatter at the top is for optional use as a Cursor project rule).
 
 This package targets **Livewire 4** where Volt is bundled with Livewire. The admin page stubs are Livewire anonymous components (`new class extends Component`) and rely on your app’s **default Livewire layout**.
 

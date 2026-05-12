@@ -1,6 +1,12 @@
+---
+description: Vormia UI Livewire Flux Admin - developer guide (structure, UI, AI prompts, Fortify, roles)
+globs: "**/*.blade.php,**/*.php"
+alwaysApply: false
+---
+
 # Vormia UI Livewire Flux Admin — Developer Guide
 
-Single reference for **package layout**, **admin UI flow and style**, **AI prompt workflow**, **Laravel Fortify** (password stubs and active users), and **assigning roles on registration**. Short Cursor rules with globs live in [`ui-rules.mdc`](ui-rules.mdc); they summarize this file.
+Single reference for **package layout**, **admin UI flow and style**, **AI prompt workflow**, **Laravel Fortify** (password stubs and active users), and **assigning roles on registration**. The YAML frontmatter above is the same scope as the former `docs/ui-rules.md` (Cursor-style hints for Blade and PHP); add this file to Project Rules if you want it applied automatically.
 
 ## Table of contents
 

@@ -4,12 +4,13 @@
 
 ### What changed
 
-- **Documentation**: Merged `docs/UI-GUIDE.md`, `docs/AI-GUIDE.md`, `docs/FORTIFY-IS-ACTIVE.md`, and `docs/ROLE-ON-REGISTRATION.md` into a single [`docs/GUIDE.md`](docs/GUIDE.md) with a table of contents and section anchors. [`docs/ui-rules.mdc`](docs/ui-rules.mdc) remains the short Cursor rules file and links into `docs/GUIDE.md`.
+- **Documentation**: Merged `docs/UI-GUIDE.md`, `docs/AI-GUIDE.md`, `docs/FORTIFY-IS-ACTIVE.md`, `docs/ROLE-ON-REGISTRATION.md`, and the Cursor-hints file (`docs/ui-rules.md` / earlier `ui-rules.mdc`) into a single [`docs/GUIDE.md`](docs/GUIDE.md). It includes a table of contents, section anchors, and YAML frontmatter (`description`, `globs`, `alwaysApply`) at the top for use as a Cursor project rule.
 - **References**: `README.md`, install/help commands, and `EnsureUserIsActive` stub comments now point to `docs/GUIDE.md` (with hash fragments where helpful).
 
 ### Upgrade notes
 
 - If you bookmarked the old doc paths, use `docs/GUIDE.md` and the headings **UI**, **AI**, **Fortify**, or **Roles** (anchors match the old topics).
+- If you used `docs/ui-rules.md` (or `ui-rules.mdc`) as a Cursor rule, point Project Rules at `docs/GUIDE.md` instead; the frontmatter and quick reference now live there.
 
 ## v4.0.3
 
